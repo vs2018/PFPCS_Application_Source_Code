@@ -1,0 +1,527 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "9e308cda-a4e2-45d5-811b-8151e4039ef3",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "E3 3EA"
+    }
+  },
+  "Response": {
+    "StatusCode": "Success",
+    "StatusMessage": "Success",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "Success",
+        "StatusMessage": "Success"
+      }
+    },
+    "DataItems": {
+      "FuelStationDetails": {
+        "FuelStationCount": 10,
+        "SearchRadiusUsed": 5,
+        "FuelStationList": [
+          {
+            "DistanceFromSearchPostcode": 2.9,
+            "Brand": "ASDA",
+            "Name": "ASDA CHARLTON",
+            "Street": "BUGSBYS WAY",
+            "Suburb": "CHARLTON",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "SE7 7SR",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "17/08/2019 14:57:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.7,
+                  "InGbp": 1.237,
+                  "TimeRecorded": "17/08/2019 14:56:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.11,
+            "Brand": "ASDA",
+            "Name": "ASDA DOCKLANDS AUTOMAT",
+            "Street": "EAST FERRY ROAD",
+            "Suburb": "ISLE OF DOGS",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "E14 3BT",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "17/08/2019 13:59:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.7,
+                  "InGbp": 1.237,
+                  "TimeRecorded": "17/08/2019 17:17:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.06,
+            "Brand": "ASDA",
+            "Name": "ASDA LEYTON AUTOMAT",
+            "Street": "MARSHALL ROAD",
+            "Suburb": "LEYTON MILLS CENTRE",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "E10 5NH",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "17/08/2019 17:20:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.7,
+                  "InGbp": 1.237,
+                  "TimeRecorded": "17/08/2019 01:52:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.02,
+            "Brand": "TESCO",
+            "Name": "TESCO LEWISHAM",
+            "Street": "LEWISHAM ROAD",
+            "Suburb": "LEWISHAM",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "SE13 7PY",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "14/08/2019 15:42:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 131.9,
+                  "InGbp": 1.319,
+                  "TimeRecorded": "10/08/2019 17:25:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.9,
+                  "InGbp": 1.239,
+                  "TimeRecorded": "17/08/2019 16:31:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.86,
+            "Brand": "SAINSBURYS",
+            "Name": "SAINSBURYS CHARLTON RIVERSIDE",
+            "Street": "BUGSBYS WAY",
+            "Suburb": "GREENWICH",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "SE10 0QJ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "17/08/2019 21:26:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "14/08/2019 20:31:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.9,
+                  "InGbp": 1.239,
+                  "TimeRecorded": "17/08/2019 13:24:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 0.06,
+            "Brand": "TESCO",
+            "Name": "TESCO BROMLEY BY BOW",
+            "Street": "BLACKWALL TUNNEL NORTHERN APPROACH",
+            "Suburb": "BROMLEY BY BOW",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "E3 3DA",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "17/08/2019 10:49:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 130.9,
+                  "InGbp": 1.309,
+                  "TimeRecorded": "14/08/2019 07:45:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.9,
+                  "InGbp": 1.239,
+                  "TimeRecorded": "14/08/2019 21:01:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.14,
+            "Brand": "ASDA",
+            "Name": "ASDA BECKTON AUTOMAT",
+            "Street": "FROBISHER ROAD",
+            "Suburb": "BECKTON",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "E6 5LX",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 127.7,
+                  "InGbp": 1.277,
+                  "TimeRecorded": "17/08/2019 13:50:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.7,
+                  "InGbp": 1.247,
+                  "TimeRecorded": "11/08/2019 14:14:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.29,
+            "Brand": "ASDA",
+            "Name": "ASDA BETHNAL GREEN VALLANCE ROAD PFS",
+            "Street": "VALLANCE ROAD",
+            "Suburb": "BETHNAL GREEN",
+            "Town": "LONDON",
+            "County": "GREATER LONDON",
+            "Postcode": "E1 5BW",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "09/08/2019 15:32:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.7,
+                  "InGbp": 1.247,
+                  "TimeRecorded": "11/08/2019 14:40:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.83,
+            "Brand": "ASDA",
+            "Name": "ASDA OLD KENT ROAD AUTOMAT",
+            "Street": "OLD KENT ROAD",
+            "Suburb": "SOUTHWARK",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "SE1 5AG",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "11/08/2019 14:38:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.8,
+                  "InGbp": 1.248,
+                  "TimeRecorded": "10/08/2019 11:42:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.15,
+            "Brand": "ESSO",
+            "Name": "LOAMPIT VALE EXPRESS",
+            "Street": "LOAMPIT HILL",
+            "Suburb": "LEWISHAM",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "SE13 7TG",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.9,
+                  "InGbp": 1.269,
+                  "TimeRecorded": "17/08/2019 11:43:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "11/08/2019 13:15:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "17/08/2019 21:23:00"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

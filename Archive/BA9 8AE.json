@@ -1,0 +1,272 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "bbedefdb-49f8-4c82-b758-0aa13896bd42",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "BA9 8AE"
+    }
+  },
+  "Response": {
+    "StatusCode": "Success",
+    "StatusMessage": "Success",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "Success",
+        "StatusMessage": "Success"
+      }
+    },
+    "DataItems": {
+      "FuelStationDetails": {
+        "FuelStationCount": 5,
+        "SearchRadiusUsed": 5,
+        "FuelStationList": [
+          {
+            "DistanceFromSearchPostcode": 0.74,
+            "Brand": "MORRISONS",
+            "Name": "MORRISONS WINCANTON 2",
+            "Street": "SOUTHGATE ROAD",
+            "Suburb": "",
+            "Town": "WINCANTON",
+            "County": "SOMERSET",
+            "Postcode": "BA9 9EB",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 131.9,
+                  "InGbp": 1.319,
+                  "TimeRecorded": "17/08/2019 21:32:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 128.9,
+                  "InGbp": 1.289,
+                  "TimeRecorded": "17/08/2019 16:38:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 0.03,
+            "Brand": "SHELL",
+            "Name": "ANCHOR HILL SERVICE STATION",
+            "Street": "A357",
+            "Suburb": "HOLTON",
+            "Town": "WINCANTON",
+            "County": "SOMERSET",
+            "Postcode": "BA9 8AE",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 4,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 133.9,
+                  "InGbp": 1.339,
+                  "TimeRecorded": "17/08/2019 11:50:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "21/06/2019 09:48:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 135.9,
+                  "InGbp": 1.359,
+                  "TimeRecorded": "21/06/2019 18:02:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "05/08/2019 14:31:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.58,
+            "Brand": "TEXACO",
+            "Name": "BRUTON COUNTRY MARKET",
+            "Street": "LEGGS LUSTY BRIDGE",
+            "Suburb": "WESTEND",
+            "Town": "BRUTON",
+            "County": "SOMERSET",
+            "Postcode": "BA10 0BQ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 134.9,
+                  "InGbp": 1.349,
+                  "TimeRecorded": "14/08/2019 12:22:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 145.9,
+                  "InGbp": 1.459,
+                  "TimeRecorded": "08/08/2019 14:12:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 131.9,
+                  "InGbp": 1.319,
+                  "TimeRecorded": "14/08/2019 16:00:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.62,
+            "Brand": "PACE",
+            "Name": "CENTRE GARAGE",
+            "Street": "PARK STREET",
+            "Suburb": "",
+            "Town": "CASTLE CARY",
+            "County": "SOMERSET",
+            "Postcode": "BA7 7ED",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "08/08/2019 09:29:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 135.9,
+                  "InGbp": 1.359,
+                  "TimeRecorded": "22/07/2019 13:43:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.74,
+            "Brand": "UNBRANDED",
+            "Name": "SOUTH CHERITON GARAGE",
+            "Street": "A357",
+            "Suburb": "SOUTH CHERITON",
+            "Town": "TEMPLECOMBE",
+            "County": "SOMERSET",
+            "Postcode": "BA8 0BG",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": null,
+                "HasSuperUnleaded": null,
+                "HasDiesel": null,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 0,
+            "FuelPriceList": []
+          }
+        ]
+      }
+    }
+  }
+}

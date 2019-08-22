@@ -1,0 +1,583 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "1f8c0160-2a78-41fe-b081-8dc2e79ae4df",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "EN1 1AA"
+    }
+  },
+  "Response": {
+    "StatusCode": "Success",
+    "StatusMessage": "Success",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "Success",
+        "StatusMessage": "Success"
+      }
+    },
+    "DataItems": {
+      "FuelStationDetails": {
+        "FuelStationCount": 10,
+        "SearchRadiusUsed": 5,
+        "FuelStationList": [
+          {
+            "DistanceFromSearchPostcode": 3.19,
+            "Brand": "ASDA",
+            "Name": "ASDA TOTTENHAM WHITE HART LANE PFS",
+            "Street": "WHITE HART LANE",
+            "Suburb": "TOTTENHAM",
+            "Town": "LONDON",
+            "County": "INNER LONDON",
+            "Postcode": "N17 7LY",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 124.7,
+                  "InGbp": 1.247,
+                  "TimeRecorded": "20/07/2019 01:33:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.7,
+                  "InGbp": 1.237,
+                  "TimeRecorded": "19/07/2019 11:02:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.07,
+            "Brand": "TESCO",
+            "Name": "TESCO WALTHAM ABBEY",
+            "Street": "SEWARDSTONE ROAD",
+            "Suburb": "",
+            "Town": "WALTHAM ABBEY",
+            "County": "ESSEX",
+            "Postcode": "EN9 1JH",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 127.9,
+                  "InGbp": 1.279,
+                  "TimeRecorded": "20/07/2019 17:46:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 123.9,
+                  "InGbp": 1.239,
+                  "TimeRecorded": "20/07/2019 10:22:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.82,
+            "Brand": "TESCO EXTRA",
+            "Name": "TESCO CHESHUNT EXTRA",
+            "Street": "BROOKFIELD CENTRE",
+            "Suburb": "CHESHUNT",
+            "Town": "WALTHAM CROSS",
+            "County": "HERTFORDSHIRE",
+            "Postcode": "EN8 0TA",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "20/07/2019 21:15:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "18/07/2019 18:01:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "19/07/2019 11:29:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.21,
+            "Brand": "TESCO EXTRA",
+            "Name": "TESCO LEA VALLEY EXTRA",
+            "Street": "GLOVER DRIVE",
+            "Suburb": "UPPER EDMONTON",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "N18 3HF",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "20/07/2019 22:47:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 131.9,
+                  "InGbp": 1.319,
+                  "TimeRecorded": "18/07/2019 18:36:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "20/07/2019 17:58:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.84,
+            "Brand": "JET",
+            "Name": "HERTFORD ROAD GARAGE",
+            "Street": "HERTFORD ROAD",
+            "Suburb": "LOWER EDMONTON",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "N9 7HL",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 128.9,
+                  "InGbp": 1.289,
+                  "TimeRecorded": "20/07/2019 15:12:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 140.0,
+                  "InGbp": 1.4,
+                  "TimeRecorded": "20/07/2019 15:12:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "12/07/2019 09:44:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.49,
+            "Brand": "GULF",
+            "Name": "BOUNDARY SERVICE STATION",
+            "Street": "HIGH STREET",
+            "Suburb": "PONDERS END",
+            "Town": "ENFIELD",
+            "County": "OUTER LONDON",
+            "Postcode": "EN3 4EJ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 127.9,
+                  "InGbp": 1.279,
+                  "TimeRecorded": "19/07/2019 09:29:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 135.9,
+                  "InGbp": 1.359,
+                  "TimeRecorded": "15/07/2019 17:45:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "30/06/2019 22:16:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.87,
+            "Brand": "ESSO",
+            "Name": "NEW BARNET EXPRESS",
+            "Street": "EAST BARNET ROAD",
+            "Suburb": "EAST BARNET",
+            "Town": "BARNET",
+            "County": "OUTER LONDON",
+            "Postcode": "EN4 8QX",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "20/07/2019 12:58:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "18/07/2019 22:15:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "20/07/2019 18:07:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.29,
+            "Brand": "TEXACO",
+            "Name": "COCKFOSTERS SERVICE STATION",
+            "Street": "COCKFOSTERS ROAD",
+            "Suburb": "COCKFOSTERS",
+            "Town": "BARNET",
+            "County": "OUTER LONDON",
+            "Postcode": "EN4 0JY",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 4,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 130.9,
+                  "InGbp": 1.309,
+                  "TimeRecorded": "20/07/2019 10:27:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 144.9,
+                  "InGbp": 1.449,
+                  "TimeRecorded": "02/07/2019 10:51:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 139.9,
+                  "InGbp": 1.399,
+                  "TimeRecorded": "06/07/2019 11:43:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "20/07/2019 14:29:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.68,
+            "Brand": "ESSO",
+            "Name": "WALTHAM CROSS EXPRESS",
+            "Street": "BULLSMOOR LANE",
+            "Suburb": "BULLSMOOR",
+            "Town": "WALTHAM CROSS",
+            "County": "OUTER LONDON",
+            "Postcode": "EN8 7RS",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 4,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 131.9,
+                  "InGbp": 1.319,
+                  "TimeRecorded": "15/07/2019 18:06:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 143.9,
+                  "InGbp": 1.439,
+                  "TimeRecorded": "15/07/2019 14:01:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "01/07/2019 02:13:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "15/07/2019 15:31:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.31,
+            "Brand": "ESSO",
+            "Name": "OAKWOOD EXPRESS",
+            "Street": "BRAMLEY ROAD",
+            "Suburb": "OAKWOOD",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "N14 4XA",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": true,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 4,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "20/07/2019 14:14:00"
+                }
+              },
+              {
+                "FuelType": "Premium Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 141.9,
+                  "InGbp": 1.419,
+                  "TimeRecorded": "06/07/2019 22:30:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 137.9,
+                  "InGbp": 1.379,
+                  "TimeRecorded": "24/06/2019 16:52:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "20/07/2019 16:05:00"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

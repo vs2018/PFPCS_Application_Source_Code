@@ -1,0 +1,4 @@
+/* #Source: shaytangolova, Feb 3, https://community.plot.ly/t/is-it-possible-to-hide-the-floating-toolbar/4911/23 */
+._dash-undo-redo {
+  display: none;
+}

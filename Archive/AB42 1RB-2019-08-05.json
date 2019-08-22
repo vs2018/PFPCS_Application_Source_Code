@@ -1,0 +1,239 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "64581352-9ce0-4a46-9cb9-4ef33c6bd7b5",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "AB42 1RB"
+    }
+  },
+  "Response": {
+    "StatusCode": "Success",
+    "StatusMessage": "Success",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "Success",
+        "StatusMessage": "Success"
+      }
+    },
+    "DataItems": {
+      "FuelStationDetails": {
+        "FuelStationCount": 5,
+        "SearchRadiusUsed": 5,
+        "FuelStationList": [
+          {
+            "DistanceFromSearchPostcode": 0.8,
+            "Brand": "ASDA",
+            "Name": "ASDA PETERHEAD AUTOMAT",
+            "Street": "WEST ROAD",
+            "Suburb": "",
+            "Town": "PETERHEAD",
+            "County": "ABERDEENSHIRE",
+            "Postcode": "AB42 2AL",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 127.7,
+                  "InGbp": 1.277,
+                  "TimeRecorded": "03/08/2019 13:44:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 126.7,
+                  "InGbp": 1.267,
+                  "TimeRecorded": "03/08/2019 20:53:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 0.33,
+            "Brand": "MORRISONS",
+            "Name": "MORRISONS PETERHEAD",
+            "Street": "HAY CRESCENT",
+            "Suburb": "",
+            "Town": "PETERHEAD",
+            "County": "ABERDEENSHIRE",
+            "Postcode": "AB42 1HH",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 128.7,
+                  "InGbp": 1.287,
+                  "TimeRecorded": "03/08/2019 22:15:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 127.7,
+                  "InGbp": 1.277,
+                  "TimeRecorded": "02/08/2019 20:33:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 0.62,
+            "Brand": "ESSO",
+            "Name": "PETERHEAD MOTORS",
+            "Street": "SOUTH ROAD",
+            "Suburb": "",
+            "Town": "PETERHEAD",
+            "County": "ABERDEENSHIRE",
+            "Postcode": "AB42 2XX",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 133.9,
+                  "InGbp": 1.339,
+                  "TimeRecorded": "03/08/2019 08:23:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 141.9,
+                  "InGbp": 1.419,
+                  "TimeRecorded": "30/07/2019 11:49:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 132.9,
+                  "InGbp": 1.329,
+                  "TimeRecorded": "03/08/2019 10:59:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.51,
+            "Brand": "SCOTTISH FUELS",
+            "Name": "MILLBANK MOTORS",
+            "Street": "SOUTH ROAD",
+            "Suburb": "BODDAM",
+            "Town": "PETERHEAD",
+            "County": "ABERDEENSHIRE",
+            "Postcode": "AB42 3AN",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": null,
+                "HasSuperUnleaded": null,
+                "HasDiesel": null,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 0,
+            "FuelPriceList": []
+          },
+          {
+            "DistanceFromSearchPostcode": 0.88,
+            "Brand": "UNBRANDED",
+            "Name": "SEAGATE SERVICE STATION",
+            "Street": "SEAGATE",
+            "Suburb": "",
+            "Town": "PETERHEAD",
+            "County": "ABERDEENSHIRE",
+            "Postcode": "AB42 1JP",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": null,
+                "HasSuperUnleaded": null,
+                "HasDiesel": null,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 0,
+            "FuelPriceList": []
+          }
+        ]
+      }
+    }
+  }
+}

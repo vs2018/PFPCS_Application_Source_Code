@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function find_all(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sort_column(elem) {
+    toggle_sort_states(elem);
+    var colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    var key;
+    if (elem.classList.contains('numeric')) {
+        key = key_num;
+    } else if (elem.classList.contains('result')) {
+        key = key_result;
+    } else {
+        key = key_alpha;
+    }
+    sort_table(elem, key(colIndex));
+}
+
+function show_all_extras() {
+    find_all('.col-result').forEach(show_extras);
+}
+
+function hide_all_extras() {
+    find_all('.col-result').forEach(hide_extras);
+}
+
+function show_extras(colresult_elem) {
+    var extras = colresult_elem.parentNode.nextElementSibling;
+    var expandcollapse = colresult_elem.firstElementChild;
+    extras.classList.remove("collapsed");
+    expandcollapse.classList.remove("expander");
+    expandcollapse.classList.add("collapser");
+}
+
+function hide_extras(colresult_elem) {
+    var extras = colresult_elem.parentNode.nextElementSibling;
+    var expandcollapse = colresult_elem.firstElementChild;
+    extras.classList.add("collapsed");
+    expandcollapse.classList.remove("collapser");
+    expandcollapse.classList.add("expander");
+}
+
+function show_filters() {
+    var filter_items = document.getElementsByClassName('filter');
+    for (var i = 0; i < filter_items.length; i++)
+        filter_items[i].hidden = false;
+}
+
+function add_collapse() {
+    // Add links for show/hide all
+    var resulttable = find('table#results-table');
+    var showhideall = document.createElement("p");
+    showhideall.innerHTML = '<a href="javascript:show_all_extras()">Show all details</a> / ' +
+                            '<a href="javascript:hide_all_extras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    find_all('.col-result').forEach(function(elem) {
+        var collapsed = get_query_parameter('collapsed') || 'Passed';
+        var extras = elem.parentNode.nextElementSibling;
+        var expandcollapse = document.createElement("span");
+        if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add("collapsed");
+            expandcollapse.classList.add("expander");
+        } else {
+            expandcollapse.classList.add("collapser");
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener("click", function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains("collapsed")) {
+                show_extras(event.currentTarget);
+            } else {
+                hide_extras(event.currentTarget);
+            }
+        });
+    })
+}
+
+function get_query_parameter(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () {
+    reset_sort_headers();
+
+    add_collapse();
+
+    show_filters();
+
+    toggle_sort_states(find('.initial-sort'));
+
+    find_all('.sortable').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  sort_column(elem);
+                              }, false)
+    });
+
+};
+
+function sort_table(clicked, key_func) {
+    var rows = find_all('.results-table-row');
+    var reversed = !clicked.classList.contains('asc');
+    var sorted_rows = sort(rows, key_func, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    var thead = document.getElementById("results-table-head");
+    document.getElementById('results-table').remove();
+    var parent = document.createElement("table");
+    parent.id = "results-table";
+    parent.appendChild(thead);
+    sorted_rows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName("BODY")[0].appendChild(parent);
+}
+
+function sort(items, key_func, reversed) {
+    var sort_array = items.map(function(item, i) {
+        return [key_func(item), i];
+    });
+    var multiplier = reversed ? -1 : 1;
+
+    sort_array.sort(function(a, b) {
+        var key_a = a[0];
+        var key_b = b[0];
+        return multiplier * (key_a >= key_b ? 1 : -1);
+    });
+
+    return sort_array.map(function(item) {
+        var index = item[1];
+        return items[index];
+    });
+}
+
+function key_alpha(col_index) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[col_index].firstChild.data.toLowerCase();
+    };
+}
+
+function key_num(col_index) {
+    return function(elem) {
+        return parseFloat(elem.childNodes[1].childNodes[col_index].firstChild.data);
+    };
+}
+
+function key_result(col_index) {
+    return function(elem) {
+        var strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+                       'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[col_index].firstChild.data);
+    };
+}
+
+function reset_sort_headers() {
+    find_all('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    find_all('.sortable').forEach(function(elem) {
+        var icon = document.createElement("div");
+        icon.className = "sort-icon";
+        icon.textContent = "vvv";
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove("desc", "active");
+        elem.classList.add("asc", "inactive");
+    });
+}
+
+function toggle_sort_states(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        reset_sort_headers();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function is_all_rows_hidden(value) {
+  return value.hidden == false;
+}
+
+function filter_table(elem) {
+    var outcome_att = "data-test-result";
+    var outcome = elem.getAttribute(outcome_att);
+    class_outcome = outcome + " results-table-row";
+    var outcome_rows = document.getElementsByClassName(class_outcome);
+
+    for(var i = 0; i < outcome_rows.length; i++){
+        outcome_rows[i].hidden = !elem.checked;
+    }
+
+    var rows = find_all('.results-table-row').filter(is_all_rows_hidden);
+    var all_rows_hidden = rows.length == 0 ? true : false;
+    var not_found_message = document.getElementById("not-found-message");
+    not_found_message.hidden = !all_rows_hidden;
+}
+</script>
+    <h1>report.html</h1>
+    <p>Report generated on 16-Aug-2019 at 07:11:12 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v1.21.1</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{&apos;pytest&apos;: &apos;5.0.1&apos;, &apos;py&apos;: &apos;1.8.0&apos;, &apos;pluggy&apos;: &apos;0.12.0&apos;}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Darwin-18.5.0-x86_64-i386-64bit</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{&apos;html&apos;: &apos;1.21.1&apos;, &apos;metadata&apos;: &apos;1.8.0&apos;}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.7.0</td></tr></table>
+    <h2>Summary</h2>
+    <p>39 tests ran in 77.10 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="passed">39 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable numeric" col="duration">Duration</th>
+          <th>Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestUtility::test_get_today_date</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>2019-08-07
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestUtility::test_to_uppercase</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>ABC
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestUtility::test_to_dataframe</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Empty DataFrame
+Columns: []
+Index: []
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_calculate_error</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625 0.0625
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_evaluate_simple</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_evaluate_smoothing</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.400097958633836
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_evaluate_add</td>
+          <td class="col-duration">0.07</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_evaluate_multiplicative</td>
+          <td class="col-duration">0.83</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>None
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_evauate</td>
+          <td class="col-duration">0.86</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625 0.400097958633836 0.0625 nan ExpSmoothing errors vishal
+0.0625
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_fit</td>
+          <td class="col-duration">0.89</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625 0.400097958633836 0.0625 nan ExpSmoothing errors vishal
+{&#x27;model&#x27;: &lt;statsmodels.tsa.holtwinters.HoltWintersResultsWrapper object at 0x13671a6d8&gt;, &#x27;selected_model&#x27;: &#x27;Simple&#x27;}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestExponentialSmoothingModel::test_predict</td>
+          <td class="col-duration">0.92</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.0625 0.400097958633836 0.0625 nan ExpSmoothing errors vishal
+           Brand   Error      Fuel   Model Post Code  Prediction
+Date                                                            
+2019-07-22  ASDA  0.0625  Unleaded  Simple  BA11 5LA       131.9
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestARIMAModel::test_evaluate</td>
+          <td class="col-duration">1.13</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+2017-07-01    102.45               80.08
+2017-08-01    102.23               79.40
+2017-09-01    118.60               92.38
+2017-10-01    118.87               91.90
+2017-11-01    118.86               93.23
+2017-12-01    119.02               93.28
+2018-01-01    118.46               93.35
+2018-02-01    120.90               93.11
+2018-03-01    120.98               93.77
+2018-04-01    120.99               93.79
+2018-05-01    121.11               93.67
+2018-06-01    119.50               92.76
+2018-07-01    119.68               92.26
+2018-08-01    121.19               93.90
+2018-09-01    121.27               94.55
+2018-10-01    121.27               94.73
+2018-11-01    121.46               95.03
+2018-12-01    121.65               94.27
+2019-01-01    119.89               92.30
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+----------------------------- Captured stdout call -----------------------------<br/>0 1 2 ArimaModel set_errors input
+0.21941911123995794
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestARIMAModel::test_fit</td>
+          <td class="col-duration">1.04</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+2017-07-01    102.45               80.08
+2017-08-01    102.23               79.40
+2017-09-01    118.60               92.38
+2017-10-01    118.87               91.90
+2017-11-01    118.86               93.23
+2017-12-01    119.02               93.28
+2018-01-01    118.46               93.35
+2018-02-01    120.90               93.11
+2018-03-01    120.98               93.77
+2018-04-01    120.99               93.79
+2018-05-01    121.11               93.67
+2018-06-01    119.50               92.76
+2018-07-01    119.68               92.26
+2018-08-01    121.19               93.90
+2018-09-01    121.27               94.55
+2018-10-01    121.27               94.73
+2018-11-01    121.46               95.03
+2018-12-01    121.65               94.27
+2019-01-01    119.89               92.30
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+----------------------------- Captured stdout call -----------------------------<br/>0 1 2 ArimaModel fit input
+{&#x27;model&#x27;: &lt;statsmodels.tsa.arima_model.ARIMAResultsWrapper object at 0x1367762b0&gt;, &#x27;selected_model&#x27;: &#x27;ARIMA((0, 1, 2))&#x27;}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestARIMAModel::test_predict</td>
+          <td class="col-duration">1.11</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+2017-07-01    102.45               80.08
+2017-08-01    102.23               79.40
+2017-09-01    118.60               92.38
+2017-10-01    118.87               91.90
+2017-11-01    118.86               93.23
+2017-12-01    119.02               93.28
+2018-01-01    118.46               93.35
+2018-02-01    120.90               93.11
+2018-03-01    120.98               93.77
+2018-04-01    120.99               93.79
+2018-05-01    121.11               93.67
+2018-06-01    119.50               92.76
+2018-07-01    119.68               92.26
+2018-08-01    121.19               93.90
+2018-09-01    121.27               94.55
+2018-10-01    121.27               94.73
+2018-11-01    121.46               95.03
+2018-12-01    121.65               94.27
+2019-01-01    119.89               92.30
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+----------------------------- Captured stdout call -----------------------------<br/>0 1 2 ArimaModel set_errors input
+0 1 2 ArimaModel fit input
+           Brand     Error    ...     Post Code Prediction
+Date                          ...                         
+2019-07-01   N/A  0.219419    ...           N/A   121.9492
+
+[1 rows x 6 columns]
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_init</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>unleaded
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_prepare_test</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>            unleaded-wholesale
+Date                          
+2019-07-01               90.37
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_evaluate</td>
+          <td class="col-duration">3.45</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>0.7682452051681707
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_fit</td>
+          <td class="col-duration">3.55</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>&lt;statsmodels.tsa.statespace.sarimax.SARIMAXResultsWrapper object at 0x13a9b6518&gt;
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_compile</td>
+          <td class="col-duration">3.26</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>1 1 3
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_clean</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+2017-07-01    102.45               80.08
+2017-08-01    102.23               79.40
+2017-09-01    118.60               92.38
+2017-10-01    118.87               91.90
+2017-11-01    118.86               93.23
+2017-12-01    119.02               93.28
+2018-01-01    118.46               93.35
+2018-02-01    120.90               93.11
+2018-03-01    120.98               93.77
+2018-04-01    120.99               93.79
+2018-05-01    121.11               93.67
+2018-06-01    119.50               92.76
+2018-07-01    119.68               92.26
+2018-08-01    121.19               93.90
+2018-09-01    121.27               94.55
+2018-10-01    121.27               94.73
+2018-11-01    121.46               95.03
+2018-12-01    121.65               94.27
+2019-01-01    119.89               92.30
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_prepare_training</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+2017-07-01    102.45               80.08
+2017-08-01    102.23               79.40
+2017-09-01    118.60               92.38
+2017-10-01    118.87               91.90
+2017-11-01    118.86               93.23
+2017-12-01    119.02               93.28
+2018-01-01    118.46               93.35
+2018-02-01    120.90               93.11
+2018-03-01    120.98               93.77
+2018-04-01    120.99               93.79
+2018-05-01    121.11               93.67
+2018-06-01    119.50               92.76
+2018-07-01    119.68               92.26
+2018-08-01    121.19               93.90
+2018-09-01    121.27               94.55
+2018-10-01    121.27               94.73
+2018-11-01    121.46               95.03
+2018-12-01    121.65               94.27
+2019-01-01    119.89               92.30
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+2019-07-01       NaN               90.37
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_initialise</td>
+          <td class="col-duration">3.89</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            3     M =           12
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.70481D+00    |proj g|=  8.32117D-03
+
+At iterate    5    f=  2.70443D+00    |proj g|=  3.73035D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    3      7     10      1     0     0   4.441D-08   2.704D+00
+  F =   2.7044284836393087     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            3     M =           12
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.69518D+00    |proj g|=  8.30651D-03
+
+At iterate    5    f=  2.69481D+00    |proj g|=  2.66454D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    3      7      9      1     0     0   8.882D-08   2.695D+00
+  F =   2.6948061827651557     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            3     M =           12
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.70481D+00    |proj g|=  8.32117D-03
+
+At iterate    5    f=  2.70443D+00    |proj g|=  3.73035D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    3      7     10      1     0     0   4.441D-08   2.704D+00
+  F =   2.7044284836393087     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            3     M =           12
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.69518D+00    |proj g|=  8.30651D-03
+
+At iterate    5    f=  2.69481D+00    |proj g|=  2.66454D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    3      7      9      1     0     0   8.882D-08   2.695D+00
+  F =   2.6948061827651557     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.29559D+00    |proj g|=  6.06456D-01
+
+At iterate    5    f=  2.13148D+00    |proj g|=  3.19403D-02
+
+At iterate   10    f=  2.12762D+00    |proj g|=  6.30802D-03
+
+At iterate   15    f=  2.12751D+00    |proj g|=  1.53346D-02
+
+At iterate   20    f=  2.12520D+00    |proj g|=  3.65621D-02
+
+At iterate   25    f=  2.12447D+00    |proj g|=  1.07456D-02
+
+At iterate   30    f=  2.12415D+00    |proj g|=  1.08383D-03
+
+At iterate   35    f=  2.12415D+00    |proj g|=  5.66720D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     35     45      1     0     0   5.667D-06   2.124D+00
+  F =   2.1241453906169827     
+
+CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_&lt;=_PGTOL            
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.28866D+00    |proj g|=  6.16690D-01
+
+At iterate    5    f=  2.12480D+00    |proj g|=  3.08030D-02
+
+At iterate   10    f=  2.12019D+00    |proj g|=  6.95816D-03
+
+At iterate   15    f=  2.12001D+00    |proj g|=  1.95935D-02
+
+At iterate   20    f=  2.11750D+00    |proj g|=  2.38895D-02
+
+At iterate   25    f=  2.11681D+00    |proj g|=  6.86649D-03
+
+At iterate   30    f=  2.11656D+00    |proj g|=  1.00865D-03
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     34     40      1     0     0   2.623D-05   2.117D+00
+  F =   2.1165555698915002     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.28866D+00    |proj g|=  6.16690D-01
+
+At iterate    5    f=  2.12480D+00    |proj g|=  3.08030D-02
+
+At iterate   10    f=  2.12019D+00    |proj g|=  6.95816D-03
+
+At iterate   15    f=  2.12001D+00    |proj g|=  1.95935D-02
+
+At iterate   20    f=  2.11750D+00    |proj g|=  2.38895D-02
+
+At iterate   25    f=  2.11681D+00    |proj g|=  6.86649D-03
+
+At iterate   30    f=  2.11656D+00    |proj g|=  1.00865D-03
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     34     40      1     0     0   2.623D-05   2.117D+00
+  F =   2.1165555698915002     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+2019-07-01    119.189481
+Freq: MS, dtype: float64
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestSARIMAXModel::test_predict</td>
+          <td class="col-duration">4.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>            Prediction
+2019-08-31  119.189481 0.7682452051681707 sarima prediction engine output
+            Prediction
+2019-08-31  119.189481
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_prepare</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+...              ...                 ...
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+2019-07-01       NaN               90.37
+2019-08-01       NaN               90.20
+2019-09-01       NaN               91.53
+2019-10-01       NaN               92.10
+2019-11-01       NaN               91.65
+2019-12-01       NaN               93.95
+2020-01-01       NaN               94.09
+2020-02-01       NaN               91.18
+2020-03-01       NaN               90.85
+2020-04-01       NaN               90.77
+2020-05-01       NaN               90.41
+2020-06-01       NaN               91.36
+2020-07-01       NaN               93.88
+2020-08-01       NaN               93.15
+2020-09-01       NaN               91.25
+2020-10-01       NaN               90.33
+2020-11-01       NaN               89.90
+2020-12-01       NaN               89.56
+2021-01-01       NaN               89.76
+2021-02-01       NaN               91.67
+2021-03-01       NaN               91.86
+2021-04-01       NaN               88.86
+2021-05-01       NaN               89.57
+2021-06-01       NaN               90.62
+2021-07-01       NaN               90.63
+
+[79 rows x 2 columns] dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_sarimax_model</td>
+          <td class="col-duration">3.98</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+...              ...                 ...
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+2019-07-01       NaN               90.37
+2019-08-01       NaN               90.20
+2019-09-01       NaN               91.53
+2019-10-01       NaN               92.10
+2019-11-01       NaN               91.65
+2019-12-01       NaN               93.95
+2020-01-01       NaN               94.09
+2020-02-01       NaN               91.18
+2020-03-01       NaN               90.85
+2020-04-01       NaN               90.77
+2020-05-01       NaN               90.41
+2020-06-01       NaN               91.36
+2020-07-01       NaN               93.88
+2020-08-01       NaN               93.15
+2020-09-01       NaN               91.25
+2020-10-01       NaN               90.33
+2020-11-01       NaN               89.90
+2020-12-01       NaN               89.56
+2021-01-01       NaN               89.76
+2021-02-01       NaN               91.67
+2021-03-01       NaN               91.86
+2021-04-01       NaN               88.86
+2021-05-01       NaN               89.57
+2021-06-01       NaN               90.62
+2021-07-01       NaN               90.63
+
+[79 rows x 2 columns] dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>            Prediction
+2019-08-31  119.189481 0.7682452051681707 sarima prediction engine output
+0.7682452051681707
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_arima_model</td>
+          <td class="col-duration">1.19</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93 dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>0 1 2 ArimaModel set_errors input
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.29559D+00    |proj g|=  6.06456D-01
+
+At iterate    5    f=  2.13148D+00    |proj g|=  3.19403D-02
+
+At iterate   10    f=  2.12762D+00    |proj g|=  6.30802D-03
+
+At iterate   15    f=  2.12751D+00    |proj g|=  1.53346D-02
+
+At iterate   20    f=  2.12520D+00    |proj g|=  3.65621D-02
+
+At iterate   25    f=  2.12447D+00    |proj g|=  1.07456D-02
+
+At iterate   30    f=  2.12415D+00    |proj g|=  1.08383D-03
+
+At iterate   35    f=  2.12415D+00    |proj g|=  5.66720D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     35     45      1     0     0   5.667D-06   2.124D+00
+  F =   2.1241453906169827     
+
+CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_&lt;=_PGTOL            
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.28866D+00    |proj g|=  6.16690D-01
+
+At iterate    5    f=  2.12480D+00    |proj g|=  3.08030D-02
+
+At iterate   10    f=  2.12019D+00    |proj g|=  6.95816D-03
+
+At iterate   15    f=  2.12001D+00    |proj g|=  1.95935D-02
+
+At iterate   20    f=  2.11750D+00    |proj g|=  2.38895D-02
+
+At iterate   25    f=  2.11681D+00    |proj g|=  6.86649D-03
+
+At iterate   30    f=  2.11656D+00    |proj g|=  1.00865D-03
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     34     40      1     0     0   2.623D-05   2.117D+00
+  F =   2.1165555698915002     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.29559D+00    |proj g|=  6.06456D-01
+
+At iterate    5    f=  2.13148D+00    |proj g|=  3.19403D-02
+
+At iterate   10    f=  2.12762D+00    |proj g|=  6.30802D-03
+
+At iterate   15    f=  2.12751D+00    |proj g|=  1.53346D-02
+
+At iterate   20    f=  2.12520D+00    |proj g|=  3.65621D-02
+
+At iterate   25    f=  2.12447D+00    |proj g|=  1.07456D-02
+
+At iterate   30    f=  2.12415D+00    |proj g|=  1.08383D-03
+
+At iterate   35    f=  2.12415D+00    |proj g|=  5.66720D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     35     45      1     0     0   5.667D-06   2.124D+00
+  F =   2.1241453906169827     
+
+CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_&lt;=_PGTOL            
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.28866D+00    |proj g|=  6.16690D-01
+
+At iterate    5    f=  2.12480D+00    |proj g|=  3.08030D-02
+
+At iterate   10    f=  2.12019D+00    |proj g|=  6.95816D-03
+
+At iterate   15    f=  2.12001D+00    |proj g|=  1.95935D-02
+
+At iterate   20    f=  2.11750D+00    |proj g|=  2.38895D-02
+
+At iterate   25    f=  2.11681D+00    |proj g|=  6.86649D-03
+
+At iterate   30    f=  2.11656D+00    |proj g|=  1.00865D-03
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     34     40      1     0     0   2.623D-05   2.117D+00
+  F =   2.1165555698915002     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            6     M =           10
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.29559D+00    |proj g|=  6.06456D-01
+
+At iterate    5    f=  2.13148D+00    |proj g|=  3.19403D-02
+
+At iterate   10    f=  2.12762D+00    |proj g|=  6.30802D-03
+
+At iterate   15    f=  2.12751D+00    |proj g|=  1.53346D-02
+
+At iterate   20    f=  2.12520D+00    |proj g|=  3.65621D-02
+
+At iterate   25    f=  2.12447D+00    |proj g|=  1.07456D-02
+
+At iterate   30    f=  2.12415D+00    |proj g|=  1.08383D-03
+
+At iterate   35    f=  2.12415D+00    |proj g|=  5.66720D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    6     35     45      1     0     0   5.667D-06   2.124D+00
+  F =   2.1241453906169827     
+
+CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_&lt;=_PGTOL            
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+ Total User time 0.000E+00 seconds.
+
+RUNNING THE L-BFGS-B CODE
+
+           * * *
+
+Machine precision = 2.220D-16
+ N =            3     M =           12
+
+At X0         0 variables are exactly at the bounds
+
+At iterate    0    f=  2.70481D+00    |proj g|=  8.32117D-03
+
+At iterate    5    f=  2.70443D+00    |proj g|=  3.73035D-06
+
+           * * *
+
+Tit   = total number of iterations
+Tnf   = total number of function evaluations
+Tnint = total number of segments explored during Cauchy searches
+Skip  = number of BFGS updates skipped
+Nact  = number of active bounds at final generalized Cauchy point
+Projg = norm of the final projected gradient
+F     = final function value
+
+           * * *
+
+   N    Tit     Tnf  Tnint  Skip  Nact     Projg        F
+    3      7     10      1     0     0   4.441D-08   2.704D+00
+  F =   2.7044284836393087     
+
+CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH             
+
+ Cauchy                time 0.000E+00 seconds.
+ Subspace minimization time 0.000E+00 seconds.
+ Line search           time 0.000E+00 seconds.
+
+0 1 2 ArimaModel fit input
+0.21941911123995794
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_rnn_model</td>
+          <td class="col-duration">3.31</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93 dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 53s - loss: 0.6976
+13/52 [======&gt;.......................] - ETA: 3s - loss: 0.4948 
+25/52 [=============&gt;................] - ETA: 1s - loss: 0.4502
+37/52 [====================&gt;.........] - ETA: 0s - loss: 0.3935
+49/52 [===========================&gt;..] - ETA: 0s - loss: 0.3702
+52/52 [==============================] - 1s 24ms/step - loss: 0.3905
+17.379726099967954
+----------------------------- Captured stderr call -----------------------------<br/>2019-08-16 07:10:33.192067: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_stat_model</td>
+          <td class="col-duration">1.08</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93 dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>0.10000000000000853 1.4515884139067623 0.06865377825931773 nan ExpSmoothing errors vishal
+0.06865377825931773
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_predict</td>
+          <td class="col-duration">9.29</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded  unleaded-wholesale
+Date                                    
+2015-01-01    113.06               89.72
+2015-02-01    112.08               83.13
+2015-03-01    106.47               85.40
+2015-04-01    106.09               84.87
+2015-05-01    111.37               82.35
+2015-06-01    111.34               82.25
+2015-07-01    110.35               82.03
+2015-08-01    109.80               82.21
+2015-09-01    109.60               81.83
+2015-10-01    107.21               85.87
+2015-11-01    107.46               85.40
+2015-12-01    108.90               81.44
+2016-01-01    108.91               80.60
+2016-02-01    108.12               80.75
+2016-03-01    107.76               81.65
+2016-04-01    102.69               82.12
+2016-05-01    102.82               82.01
+2016-06-01    102.80               80.96
+2016-07-01    102.92               81.02
+2016-08-01    102.79               80.09
+2016-09-01    107.00               81.57
+2016-10-01    106.88               81.37
+2016-11-01    102.60               79.71
+2016-12-01    102.70               79.78
+2017-01-01    102.50               79.15
+2017-02-01    102.52               79.41
+2017-03-01    117.77               92.50
+2017-04-01    118.11               92.49
+2017-05-01    118.33               92.07
+2017-06-01    118.66               92.70
+...              ...                 ...
+2019-02-01    120.72               90.79
+2019-03-01    120.70               90.31
+2019-04-01    120.47               90.28
+2019-05-01    121.83               94.06
+2019-06-01    121.93               94.10
+2019-07-01       NaN               90.37
+2019-08-01       NaN               90.20
+2019-09-01       NaN               91.53
+2019-10-01       NaN               92.10
+2019-11-01       NaN               91.65
+2019-12-01       NaN               93.95
+2020-01-01       NaN               94.09
+2020-02-01       NaN               91.18
+2020-03-01       NaN               90.85
+2020-04-01       NaN               90.77
+2020-05-01       NaN               90.41
+2020-06-01       NaN               91.36
+2020-07-01       NaN               93.88
+2020-08-01       NaN               93.15
+2020-09-01       NaN               91.25
+2020-10-01       NaN               90.33
+2020-11-01       NaN               89.90
+2020-12-01       NaN               89.56
+2021-01-01       NaN               89.76
+2021-02-01       NaN               91.67
+2021-03-01       NaN               91.86
+2021-04-01       NaN               88.86
+2021-05-01       NaN               89.57
+2021-06-01       NaN               90.62
+2021-07-01       NaN               90.63
+
+[79 rows x 2 columns] dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>            Prediction
+2019-08-31  119.189481 0.7682452051681707 sarima prediction engine output
+0 1 2 ArimaModel set_errors input
+0 1 2 ArimaModel fit input
+Epoch 1/1
+
+ 1/52 [..............................] - ETA: 54s - loss: 0.9047
+12/52 [=====&gt;........................] - ETA: 3s - loss: 0.4106 
+24/52 [============&gt;.................] - ETA: 1s - loss: 0.4170
+35/52 [===================&gt;..........] - ETA: 0s - loss: 0.3596
+47/52 [==========================&gt;...] - ETA: 0s - loss: 0.3668
+52/52 [==============================] - 1s 25ms/step - loss: 0.3646
+0.10000000000000853 1.4515884139067623 0.06865377825931773 nan ExpSmoothing errors vishal
+[0.21941911123995794, 0.7682452051681707, 16.41986622214317, 0.06865377825931773] evaluate prediction model vishal
+           Brand     Error      Fuel     Model Post Code  Prediction
+Date                                                                
+2019-07-01   N/A  0.068654  unleaded  Additive       N/A  122.097359 prediction model result
+           Brand     Error      Fuel     Model Post Code  Prediction
+Date                                                                
+2019-07-01   N/A  0.068654  unleaded  Additive       N/A  122.097359
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_evaluate</td>
+          <td class="col-duration">5.54</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93 dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>0 1 2 ArimaModel set_errors input
+0 1 2 ArimaModel fit input
+Epoch 1/1
+
+ 1/52 [..............................] - ETA: 52s - loss: 1.0458
+13/52 [======&gt;.......................] - ETA: 3s - loss: 0.4407 
+24/52 [============&gt;.................] - ETA: 1s - loss: 0.3452
+35/52 [===================&gt;..........] - ETA: 0s - loss: 0.3557
+45/52 [========================&gt;.....] - ETA: 0s - loss: 0.3612
+52/52 [==============================] - 1s 25ms/step - loss: 0.3505
+0.10000000000000853 1.4515884139067623 0.06865377825931773 nan ExpSmoothing errors vishal
+[0.21941911123995794, 15.472589284181595, 0.06865377825931773] evaluate prediction model vishal
+2
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestPredictionModel::test_update_rnn_model</td>
+          <td class="col-duration">0.63</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>            unleaded
+Date                
+2015-01-01    113.06
+2015-02-01    112.08
+2015-03-01    106.47
+2015-04-01    106.09
+2015-05-01    111.37
+2015-06-01    111.34
+2015-07-01    110.35
+2015-08-01    109.80
+2015-09-01    109.60
+2015-10-01    107.21
+2015-11-01    107.46
+2015-12-01    108.90
+2016-01-01    108.91
+2016-02-01    108.12
+2016-03-01    107.76
+2016-04-01    102.69
+2016-05-01    102.82
+2016-06-01    102.80
+2016-07-01    102.92
+2016-08-01    102.79
+2016-09-01    107.00
+2016-10-01    106.88
+2016-11-01    102.60
+2016-12-01    102.70
+2017-01-01    102.50
+2017-02-01    102.52
+2017-03-01    117.77
+2017-04-01    118.11
+2017-05-01    118.33
+2017-06-01    118.66
+2017-07-01    102.45
+2017-08-01    102.23
+2017-09-01    118.60
+2017-10-01    118.87
+2017-11-01    118.86
+2017-12-01    119.02
+2018-01-01    118.46
+2018-02-01    120.90
+2018-03-01    120.98
+2018-04-01    120.99
+2018-05-01    121.11
+2018-06-01    119.50
+2018-07-01    119.68
+2018-08-01    121.19
+2018-09-01    121.27
+2018-10-01    121.27
+2018-11-01    121.46
+2018-12-01    121.65
+2019-01-01    119.89
+2019-02-01    120.72
+2019-03-01    120.70
+2019-04-01    120.47
+2019-05-01    121.83
+2019-06-01    121.93 dataframe input vishal predictionmodel
+----------------------------- Captured stdout call -----------------------------<br/>            unleaded
+Date                
+2019-06-01    121.93 rnn update input vishal
+            Prediction Error           Model      Fuel Brand Post Code
+Date                                                                  
+2019-06-01      121.93  None  Neural Network  unleaded   N/A       N/A
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_get_model</td>
+          <td class="col-duration">2.92</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 51s - loss: 0.0558
+11/52 [=====&gt;........................] - ETA: 3s - loss: 0.2323 
+23/52 [============&gt;.................] - ETA: 1s - loss: 0.2664
+34/52 [==================&gt;...........] - ETA: 0s - loss: 0.3143
+45/52 [========================&gt;.....] - ETA: 0s - loss: 0.3260
+52/52 [==============================] - 1s 24ms/step - loss: 0.3521
+&lt;keras.engine.sequential.Sequential object at 0x1220b5240&gt;
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_compile</td>
+          <td class="col-duration">3.30</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 1:00 - loss: 0.6976
+12/52 [=====&gt;........................] - ETA: 4s - loss: 0.2214  
+24/52 [============&gt;.................] - ETA: 1s - loss: 0.4006
+35/52 [===================&gt;..........] - ETA: 0s - loss: 0.3566
+46/52 [=========================&gt;....] - ETA: 0s - loss: 0.3470
+52/52 [==============================] - 1s 27ms/step - loss: 0.3655
+[array([0.15646632], dtype=float32), array([0.08963573], dtype=float32)]
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_evaluate</td>
+          <td class="col-duration">3.68</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 1:06 - loss: 0.0628
+13/52 [======&gt;.......................] - ETA: 4s - loss: 0.3247  
+24/52 [============&gt;.................] - ETA: 1s - loss: 0.2907
+35/52 [===================&gt;..........] - ETA: 0s - loss: 0.3319
+46/52 [=========================&gt;....] - ETA: 0s - loss: 0.3446
+52/52 [==============================] - 2s 30ms/step - loss: 0.3353
+15.445797491073606
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_update</td>
+          <td class="col-duration">4.66</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 1:14 - loss: 0.0374
+11/52 [=====&gt;........................] - ETA: 5s - loss: 0.5127  
+20/52 [==========&gt;...................] - ETA: 2s - loss: 0.4404
+29/52 [===============&gt;..............] - ETA: 1s - loss: 0.3889
+39/52 [=====================&gt;........] - ETA: 0s - loss: 0.3693
+49/52 [===========================&gt;..] - ETA: 0s - loss: 0.3345
+52/52 [==============================] - 2s 33ms/step - loss: 0.3361
+              unleaded
+2019-09-30  104.613641 rnn update input vishal
+            Prediction      Error    ...     Brand Post Code
+2019-09-30  104.613641  15.302179    ...     TESCO   EN1 1AA
+
+[1 rows x 6 columns]
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_predict_index</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>DatetimeIndex([&#x27;2019-08-31&#x27;, &#x27;2019-09-30&#x27;], dtype=&#x27;datetime64[ns]&#x27;, freq=&#x27;M&#x27;)
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_reset</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>None
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_fit</td>
+          <td class="col-duration">2.95</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 52s - loss: 0.6699
+13/52 [======&gt;.......................] - ETA: 3s - loss: 0.5944 
+25/52 [=============&gt;................] - ETA: 1s - loss: 0.4399
+37/52 [====================&gt;.........] - ETA: 0s - loss: 0.4275
+49/52 [===========================&gt;..] - ETA: 0s - loss: 0.3814
+52/52 [==============================] - 1s 24ms/step - loss: 0.3602
+&lt;keras.engine.sequential.Sequential object at 0x13d128e10&gt;
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_infrastructure.py::TestRNNModel::test_predict</td>
+          <td class="col-duration">3.41</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">----------------------------- Captured stdout call -----------------------------<br/>Epoch 1/1
+
+ 1/52 [..............................] - ETA: 58s - loss: 8.3177e-04
+13/52 [======&gt;.......................] - ETA: 3s - loss: 0.3493     
+24/52 [============&gt;.................] - ETA: 1s - loss: 0.3759
+36/52 [===================&gt;..........] - ETA: 0s - loss: 0.3695
+47/52 [==========================&gt;...] - ETA: 0s - loss: 0.3333
+52/52 [==============================] - 1s 27ms/step - loss: 0.3378
+              unleaded
+2019-08-31  106.444288
+2019-09-30  104.574591
+</div></td></tr></tbody></table></body></html>

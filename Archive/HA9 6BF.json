@@ -1,0 +1,535 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "15aea35f-0f2d-4330-b256-f2f115200d88",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "HA9 6BF"
+    }
+  },
+  "Response": {
+    "StatusCode": "Success",
+    "StatusMessage": "Success",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "Success",
+        "StatusMessage": "Success"
+      }
+    },
+    "DataItems": {
+      "FuelStationDetails": {
+        "FuelStationCount": 10,
+        "SearchRadiusUsed": 5,
+        "FuelStationList": [
+          {
+            "DistanceFromSearchPostcode": 4.92,
+            "Brand": "ASDA",
+            "Name": "ASDA SOUTH RUISLIP AUTOMAT",
+            "Street": "OLD DAIRY LANE",
+            "Suburb": "SOUTH RUISLIP",
+            "Town": "RUISLIP",
+            "County": "OUTER LONDON",
+            "Postcode": "HA4 0EF",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "11/08/2019 17:04:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 122.7,
+                  "InGbp": 1.227,
+                  "TimeRecorded": "10/08/2019 11:13:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.0,
+            "Brand": "ASDA",
+            "Name": "ASDA NORTHOLT WESTERN AVENUE PFS",
+            "Street": "TARGET ROUNDABOUT",
+            "Suburb": "",
+            "Town": "NORTHOLT",
+            "County": "MIDDLESEX",
+            "Postcode": "UB5 5AW",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "17/08/2019 09:28:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 122.7,
+                  "InGbp": 1.227,
+                  "TimeRecorded": "17/08/2019 19:16:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.7,
+            "Brand": "TESCO EXTRA",
+            "Name": "TESCO YEADING EXTRA",
+            "Street": "GLENCOE ROAD",
+            "Suburb": "YEADING",
+            "Town": "HAYES",
+            "County": "OUTER LONDON",
+            "Postcode": "UB4 9SQ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "14/08/2019 20:42:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 129.9,
+                  "InGbp": 1.299,
+                  "TimeRecorded": "14/08/2019 16:08:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 122.9,
+                  "InGbp": 1.229,
+                  "TimeRecorded": "14/08/2019 17:41:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 4.54,
+            "Brand": "SAINSBURYS",
+            "Name": "SAINSBURYS SOUTH RUISLIP",
+            "Street": "LONG DRIVE",
+            "Suburb": "SOUTH RUISLIP",
+            "Town": "RUISLIP",
+            "County": "OUTER LONDON",
+            "Postcode": "HA4 0HQ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 125.9,
+                  "InGbp": 1.259,
+                  "TimeRecorded": "17/08/2019 21:31:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 128.9,
+                  "InGbp": 1.289,
+                  "TimeRecorded": "09/08/2019 17:21:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 122.9,
+                  "InGbp": 1.229,
+                  "TimeRecorded": "17/08/2019 14:19:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.93,
+            "Brand": "ASDA",
+            "Name": "ASDA PARK ROYAL AUTOMAT",
+            "Street": "PARK ROYAL ROAD",
+            "Suburb": "EALING",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "NW10 7LW",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.7,
+                  "InGbp": 1.267,
+                  "TimeRecorded": "17/08/2019 15:39:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.7,
+                  "InGbp": 1.247,
+                  "TimeRecorded": "17/08/2019 14:23:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.0,
+            "Brand": "ASDA",
+            "Name": "ASDA WEMBLEY AUTOMAT",
+            "Street": "FORTY LANE",
+            "Suburb": "WEMBLEY",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "HA9 9EX",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.7,
+                  "InGbp": 1.267,
+                  "TimeRecorded": "17/08/2019 12:43:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.7,
+                  "InGbp": 1.247,
+                  "TimeRecorded": "09/08/2019 08:20:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 3.43,
+            "Brand": "TESCO",
+            "Name": "TESCO BRENT CROSS HENDON WAY",
+            "Street": "TILLING ROAD",
+            "Suburb": "BRENT CROSS",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "NW2 1LZ",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.9,
+                  "InGbp": 1.269,
+                  "TimeRecorded": "17/08/2019 08:19:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 131.8,
+                  "InGbp": 1.318,
+                  "TimeRecorded": "14/08/2019 20:26:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "14/08/2019 18:41:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.81,
+            "Brand": "TESCO",
+            "Name": "TESCO HOOVER BUILDING",
+            "Street": "WESTERN AVENUE",
+            "Suburb": "PERIVALE",
+            "Town": "GREENFORD",
+            "County": "OUTER LONDON",
+            "Postcode": "UB6 8DW",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.9,
+                  "InGbp": 1.269,
+                  "TimeRecorded": "17/08/2019 11:34:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 132.9,
+                  "InGbp": 1.329,
+                  "TimeRecorded": "07/08/2019 07:09:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "14/08/2019 13:14:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 1.26,
+            "Brand": "TESCO EXTRA",
+            "Name": "TESCO WEMBLEY EXTRA",
+            "Street": "GREAT CENTRAL WAY",
+            "Suburb": "NEASDEN",
+            "Town": "LONDON",
+            "County": "OUTER LONDON",
+            "Postcode": "NW10 0TL",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": true,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 3,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 126.9,
+                  "InGbp": 1.269,
+                  "TimeRecorded": "17/08/2019 19:29:00"
+                }
+              },
+              {
+                "FuelType": "Super Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 132.9,
+                  "InGbp": 1.329,
+                  "TimeRecorded": "10/08/2019 19:15:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 124.9,
+                  "InGbp": 1.249,
+                  "TimeRecorded": "14/08/2019 18:48:00"
+                }
+              }
+            ]
+          },
+          {
+            "DistanceFromSearchPostcode": 2.96,
+            "Brand": "ASDA",
+            "Name": "ASDA COLINDALE AUTOMAT",
+            "Street": "CAPITOL WAY",
+            "Suburb": "COLINDALE",
+            "Town": "LONDON",
+            "County": "GREATER LONDON",
+            "Postcode": "NW9 0EW",
+            "Features": {
+              "Fuel": {
+                "HasUnleaded": true,
+                "HasSuperUnleaded": null,
+                "HasDiesel": true,
+                "HasPremiumDiesel": null,
+                "HasLpg": null,
+                "HasEvCharging": null
+              },
+              "Services": {
+                "HasCarWash": null,
+                "HasTyrePump": null,
+                "HasWater": null,
+                "HasCashPoint": null,
+                "HasCarVacuum": null
+              }
+            },
+            "FuelPriceCount": 2,
+            "FuelPriceList": [
+              {
+                "FuelType": "Diesel",
+                "LatestRecordedPrice": {
+                  "InPence": 127.7,
+                  "InGbp": 1.277,
+                  "TimeRecorded": "17/08/2019 06:47:00"
+                }
+              },
+              {
+                "FuelType": "Unleaded",
+                "LatestRecordedPrice": {
+                  "InPence": 125.7,
+                  "InGbp": 1.257,
+                  "TimeRecorded": "17/08/2019 09:45:00"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "77dbb5d0-fb94-448d-b1d6-7e8748a15f76",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "None"
+    }
+  },
+  "Response": {
+    "StatusCode": "SandboxLimitation",
+    "StatusMessage": "Trial account limitation: Key value for postcode must contain the letter 'A'",
+    "StatusInformation": {},
+    "DataItems": {}
+  }
+}

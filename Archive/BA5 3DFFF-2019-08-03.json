@@ -1,0 +1,28 @@
+{
+  "BillingAccount": {
+    "AccountType": "Trial",
+    "AccountBalance": 999.99,
+    "TransactionCost": 999.99,
+    "ExtraInformation": {}
+  },
+  "Request": {
+    "RequestGuid": "3275913e-3998-4124-a611-c0a32e125590",
+    "PackageId": "700f9313-8561-4a4e-9951-4ce3d87dd48b",
+    "PackageVersion": 1,
+    "ResponseVersion": 2,
+    "DataKeys": {
+      "Postcode": "BA5 3DFFF"
+    }
+  },
+  "Response": {
+    "StatusCode": "ItemNotFound",
+    "StatusMessage": "No data results found for query",
+    "StatusInformation": {
+      "Lookup": {
+        "StatusCode": "FuelStationDataNotFound",
+        "StatusMessage": "No fuel station data found for this search."
+      }
+    },
+    "DataItems": {}
+  }
+}
