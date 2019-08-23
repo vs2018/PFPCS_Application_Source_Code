@@ -47,14 +47,18 @@ from ..infrastructure.utility import Utility
 
 
 class Classifier:
+    """Class to classify natural language text"""
     def __init__(self):
+        """Construct a classifier object"""
         self.classifier = self.fit()
 
     def fit(self):  # [5]
+        """Instantiate a Naive Bayes Classifier using TextBlob"""
         cl = NaiveBayesClassifier(training_data_title[0:-10])
         return cl
 
     def classify(self, data):  # [5]
+        """Classify text as positive or negative, including the probability the text is positive or negative"""
         re = self.classifier.prob_classify(data)
         overall = re.max()
         pos = round(re.prob("pos"), 2)
@@ -63,10 +67,13 @@ class Classifier:
 
 
 class WebScraper:
+    """Class is responsible for scraping HTML data from web pages"""
     def __init__(self, url):
+        """Construct a scraper object with the url of the web page to scrape"""
         self.url = url
 
     def get_html(self, url):  # [8]
+        """Instantiate BeautifulSoup to scrape html from a url"""
         try:
             with closing(get(url, stream=True)) as response:
                 result = BeautifulSoup(response.content, "html.parser")  # [4]
@@ -75,6 +82,7 @@ class WebScraper:
             return None
 
     def scrape_url(self, links):  # [4] [8]
+        """Extract specific html data from web scraped html"""
         try:
             data = DatabaseModel().read("rac_data", "rac")
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [7]
@@ -102,6 +110,7 @@ class WebScraper:
         return data
 
     def scrape_urls(self):  # [4] [8]
+        """Get relevant RAC website newsletter urls to scrape html data"""
         try:
             links = DatabaseModel().read("rac_data_sources", "rac")
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [7]
@@ -118,6 +127,7 @@ class WebScraper:
         return result
 
     def scrape_rac_outlook(self):  # [4] [8]
+        """Scrape RAC predictions from RAC website"""
         html = self.get_html("https://www.rac.co.uk/drive/advice/fuel-watch/")
         diesel = (
             html.find_all("div", class_="fuel-type-container first odd")[0]
@@ -148,10 +158,13 @@ class WebScraper:
 
 
 class NaturalLanguage:
+    """Class to create a time series DataFrame for processed natural langauge text data"""
     def __init__(self, query_input):
+        """Construct an object with text data to be processed"""
         self.query_input = query_input
 
     def process_predictions(self, forecast):
+        """Generate the fuel price movement prediction output"""
         try:
             value = forecast.iloc[1][0]  # [9]
         except IndexError as e:
@@ -170,6 +183,7 @@ class NaturalLanguage:
 
     # tested
     def process_classifications(self, scores):
+        """Convert classified text data from positive/negative to a numerical score of 1/-1 to make a prediction"""
         classifications = []
         dates = []
         for score in scores:
@@ -188,6 +202,7 @@ class NaturalLanguage:
         return {"classifications": classifications, "dates": dates}
 
     def prepare_timeseries(self, classifications, dates):
+        """Construct a time series DataFrame to make a prediction"""
         dates = [datetime.datetime.strptime(date, "%Y-%m-%d") for date in dates]  # [11]
         oldest = min(dates)
         today = Utility.get_today_date()
@@ -199,10 +214,13 @@ class NaturalLanguage:
 
 
 class RACNewsletter(NaturalLanguage):
+    """Inherits from NaturalLanguage to process html data in RAC Newsletters, and generate predictions"""
     def __init__(self, query_input):
+        """Construct a RAC Newsletter object"""
         super().__init__(query_input)
 
     def get_classification(self, data):
+        """Classify RAC Newsletters and generate a time series with classification scores"""
         scores = []
 
         for result in data[-10:]:
@@ -226,6 +244,7 @@ class RACNewsletter(NaturalLanguage):
         return df
 
     def generate_prediction(self):
+        """Generate next months fuel price movement prediction based on RAC Newsletters"""
         web_scraper = WebScraper(self.query_input)
         data = web_scraper.scrape_urls()
         outlook = WebScraper(
@@ -248,7 +267,9 @@ class RACNewsletter(NaturalLanguage):
 
 
 class DiscoveryConnection:
+    """Class to connect to the IBM Watson Discovery APi"""
     def __init__(self):  # [17]
+        """Constructor to create an object with a connection to the Discovery news collection dataset"""
         self.version = "2018-08-01"
         self.url = "https://gateway-lon.watsonplatform.net/discovery/api"
         self.key = "AlAAjM1RG99-dBY9I1XIU-V3w4p62cKyzllNjRX4W6pQ"
@@ -256,26 +277,28 @@ class DiscoveryConnection:
         self.news_collection = self.generate_news_collection()
 
     def connect(self):  # [17]
+        """IBM Watson Discovery API connection instance"""
         discovery = DiscoveryV1(version=self.version, url=self.url, iam_apikey=self.key)
         return discovery
 
     def generate_news_collection(self):  # [17]
+        """Connection to the news collection dataset"""
         environments = self.connection.list_environments().get_result()
         news_environment_id = "system"
         collections = self.connection.list_collections(news_environment_id).get_result()
         news_collections = [x for x in collections["collections"]]
-        configurations = self.connection.list_configurations(
-            environment_id=news_environment_id
-        ).get_result()
         return news_collections
 
 
 class NewsArticle(NaturalLanguage):
+    """Inherits from the parent NaturalLanguage class to process online news articles and predict the next days fuel price movement prediction"""
     def __init__(self, query_input):
+        """Constructs a news article object"""
         super().__init__(query_input)
         self.discovery = DiscoveryConnection()
 
     def extract_body(self, data):
+        """Extracts the news article body"""
         sentences = []
         for relation in data["enriched_text"]["relations"]:
             sentences.append(relation["sentence"])
@@ -288,6 +311,7 @@ class NewsArticle(NaturalLanguage):
 
     # tested
     def parse_api_data(self, data):
+        """Constructs a news article dictionary with relevant details"""
         results = []
         for result in data["results"]:
             body = self.extract_body(result)
@@ -307,6 +331,7 @@ class NewsArticle(NaturalLanguage):
     # tested
 
     def generate_timeseries(self, scores):
+        """Generates a time series DataFrame with classifications of news articles found in a API query"""
         classifications = super().process_classifications(scores)
         df = super().prepare_timeseries(
             classifications["classifications"], classifications["dates"]
@@ -321,6 +346,7 @@ class NewsArticle(NaturalLanguage):
 
     # tested
     def generate_wordcloud(self, wordcloud):
+        """Generates a word cloud of the news articles fetched"""
         Utility.save_file("wordcloud", wordcloud)
         try:
             os.makedirs("assets")  # [22]
@@ -334,6 +360,7 @@ class NewsArticle(NaturalLanguage):
 
     # tested
     def filter_key_words(self, text):
+        """Filters the relevant news articles that are on the topic of UK fuel prices"""
         relevant_words = ["uk", "price", "fuel"]
         relevant_words_caps = ["UK", "Price", "Fuel"]
         relevant_words_bool = all(word in text for word in relevant_words)
@@ -345,6 +372,7 @@ class NewsArticle(NaturalLanguage):
 
     # tested
     def get_classification(self, data):
+        """Generate a positive or negative classification for each news article"""
         wordcloud = []
         scores = []
         date = Utility.get_today_date()
@@ -377,6 +405,7 @@ class NewsArticle(NaturalLanguage):
         return df
 
     def call_api(self):
+        """Call the IBM Watson Discovery API to fetch news articles with the query: fuel price uk"""
         try:
             data = DatabaseModel().read("discovery_data", "discovery")
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [7]
@@ -395,6 +424,7 @@ class NewsArticle(NaturalLanguage):
 
     # tested
     def generate_prediction(self):
+        """Generate the next days fuel price movement predictions using news articles on fuel prices in the uk"""
         data = self.call_api()
         data = list(data)
         df = self.get_classification(data)

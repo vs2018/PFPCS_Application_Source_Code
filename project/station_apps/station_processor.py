@@ -19,7 +19,6 @@
 # [19] Adapted from: Author: Matti John, Date:Jun 8 '13 at 16:20, URL:https://stackoverflow.com/questions/17001389/pandas-resample-documentation
 # [20] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
 
-
 import requests
 import json
 import pandas as pd
@@ -28,9 +27,11 @@ from .map import Map
 
 
 class Processor:
+    """The Processor class creates a time series dataset for a particular petrol station, to generate predictions for Journey Saver and Nearest Station Dashboards"""
     def __init__(
         self, brand, town, county, post_code, fuel_type, price, search, master
     ):
+        """Constructs a Processor object with details of a particular petrol station"""
         self.brand = brand
         self.town = town
         self.county = county
@@ -41,6 +42,7 @@ class Processor:
         self.master = master
 
     def generate_outcode(self, post_code):
+        """Generates an outcode eg a postcode of EN1 1AA will have an outcode of EN1"""
         outcode = post_code.split(" ")[0]
         result = ""
         for chr in outcode:
@@ -50,6 +52,7 @@ class Processor:
         return result
 
     def filter_post_codes(self, df):
+        """Generates a list of petrol station postcodes, from the master csv file with historical petrol station prices, with outcode of self.post_code"""
         unique_post_codes = df["PostCode"].unique().tolist()  # [4]
         outcode = self.generate_outcode(self.post_code)
         matching_post_codes = []
@@ -61,7 +64,7 @@ class Processor:
         return matching_post_codes
 
     def generate_coordinates(self, matching_pc_list):
-
+        """Generates list of latitude and longitude coordinates for filtered petrol station postcodes"""
         latlon_list = []
         for idx, pc in enumerate(matching_pc_list):
             try:
@@ -76,6 +79,7 @@ class Processor:
         return latlon_obj
 
     def call_api(self, lat, lon, obj, matching_pc_list):  # [5]
+        """Calculates distance, by calling the Distance Matrix API, between self.post_code and filtered petrol station postcodes, and sorts by nearest petrol station"""
         api_data = {
             "origins": [{"latitude": lat, "longitude": lon}],
             "destinations": obj,
@@ -99,7 +103,7 @@ class Processor:
         return sorted_post_codes
 
     def find_nearest_stations(self, df):
-
+        """Generates a sorted list of petrol stations by distance from self.post_code, the users entered postcode"""
         latlon = Map.generate_latlon(self.post_code)
         lat, lon = latlon[1], latlon[0]
         matching_pc = self.filter_post_codes(df)
@@ -108,6 +112,7 @@ class Processor:
         return nearest_pc_list
 
     def filter_brand(self, bool):
+        """Filters master csv file containing historical petrol station prices by brand type, supermarket or non-supermarket retailer"""
         unique_brands = self.master["Brand"].unique().tolist()  # [4]
 
         supermarkets = ["TESCO", "MORRISONS", "ASDA", "SAINSBURYS"]
@@ -123,6 +128,7 @@ class Processor:
         return df
 
     def determine_brand(self):
+        """Determines instantiated petrol station retailer type, supermarket or non-supermarket"""
         for supermarket in ["TESCO", "MORRISONS", "ASDA", "SAINSBURYS"]:
             if supermarket in self.brand:
                 result = True
@@ -131,7 +137,7 @@ class Processor:
         return result
 
     def get_station_history(self):
-
+        """Generates a petrol station time series DataFrame with historical fuel prices"""
         dataframe_post_codes = self.master["PostCode"].unique().tolist()  # [4]
 
         if self.post_code not in dataframe_post_codes:
@@ -157,6 +163,7 @@ class Processor:
         return df1
 
     def transform_timeseries(self, df1):
+        """Updates petrol station time series DataFrame, eg missing and duplicated data"""
         df2 = df1[["Date", "Price"]]  # [12]
         df2["Date"] = pd.to_datetime(df2["Date"])  # [13]
         df2.set_index("Date", inplace=True)  # [14]
@@ -170,6 +177,7 @@ class Processor:
         return df2
 
     def get_predictions(self):
+        """Generates petrol station time series DataFrame with historical and predicted fuel price to display on Nearest Station and Journey Saver Dashboard"""
         p_obj = {
             "1-Day Price Prediction": self.price,
             "1-Day Prediction Confidence": 99999,

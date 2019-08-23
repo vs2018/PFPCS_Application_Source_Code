@@ -19,13 +19,17 @@ from .map import Map
 
 
 class Vehicle:
+    """Class generates personalised fuel price insights for the Journey Saver Dashboard, given a vehicle registration number"""
     def __init__(self, reg):
+        """Constructs an object with vehicle details with a user provided vehicle registration"""
         self.registration = reg
         self.data = None
         self.save()
 
     def get_spec(self):
+
         if self.data["Response"]["StatusCode"] == "Success":
+            """Generates vehicle details"""
             tank = self.data["Response"]["DataItems"]["TechnicalDetails"]["Dimensions"][
                 "FuelTankCapacity"
             ]
@@ -55,7 +59,9 @@ class Vehicle:
             }
             return spec
 
+
     def save(self):
+        """Calls the UK Vehicle Data API to fetch vehicle details"""
         try:
             data = DatabaseModel().read("vehicle", self.registration)
 
@@ -70,17 +76,21 @@ class Vehicle:
         return data
 
     def get_tank_capacity(self):
+        """Get vehicle fuel tank capacity"""
         return self.data["Response"]["DataItems"]["TechnicalDetails"]["Dimensions"][
             "FuelTankCapacity"
         ]
 
     def get_fuel_type(self):
+        """Get vehicle fuel type"""
         return self.data["Response"]["DataItems"]["VehicleRegistration"]["FuelType"]
 
     def to_mpg(self, mpg):
+        """Convert Miles Per Gallon to Litres"""
         return mpg / 4.54609  # [3]
 
     def prepare(self, hoverData, origin, destination, fuel_type):
+        """Fetch routes and petrol station coordinates for personalised analysis"""
         station_post_code = hoverData["points"][0]["customdata"]
         today = Utility.get_today_date()
         station = JourneyStation(origin, fuel_type, destination)
@@ -102,6 +112,7 @@ class Vehicle:
         return data
 
     def analysis(self, hoverData, origin, destination, tank, fuel_type):
+        """Generates the personalised fuel price analysis for the Journey Saver Dashboard"""
         spec = self.get_spec()
         data = self.prepare(hoverData, origin, destination, fuel_type)
         savings = self.prepare_savings(
@@ -171,6 +182,7 @@ class Vehicle:
         station_post_code,
         fuel_type,
     ):
+        """Generates analysis highlighting whether to fill the tank today or tomorrow"""
         if predicted_price < station_price:
             predicted_saving = station_price - predicted_price
             predicted_saving = (predicted_saving * full_tank) / 100
@@ -194,6 +206,7 @@ class Vehicle:
         annual_loss,
         selected_station_brand,
     ):
+        """Generates analysis comparing select petrol station price to cheapest petrol station found on journey, along with annual savings possible"""
         if difference > 0:
             analysis_difference = f"Price of fuel per litre is {difference} pence higher than the cheapest petrol station on your journey, {cheapest_brand} located at {cheapest_location}, where the price is {min} pence"
             analysis_loss = (
@@ -212,6 +225,7 @@ class Vehicle:
         return analysis
 
     def prepare_comparison(self, df_route, city, min, station_price, df_raw):
+        """Prepare data for comparison_analysis method"""
         journey_distance = df_route["Distance-Value"].iloc[0] / 1000
         min_annual_cost = (((journey_distance * 260) / city) * min) / 100
         station_annual_cost = (((journey_distance * 260) / city) * station_price) / 100
@@ -227,6 +241,7 @@ class Vehicle:
         return comparison
 
     def round_offroutes(self, latlon, df_offroutes):
+        """Round latitude and longitude coordinates to 2 decimal places to compare to persisted data which has been rounded to an accuracy of 2 decimal places"""
         lon = round(latlon[0], 2)
         lat = round(latlon[1], 2)
         decimals = 2
@@ -246,7 +261,7 @@ class Vehicle:
         return {"df_offroutes": df_offroutes, "lon": lon, "lat": lat}
 
     def round_offroute(self, df_offroute, combined, station_price):
-
+        """Round distance and duration route information to 2 places"""
         distance = df_offroute["route_information"].iloc[0]  # [6]
         distance_array = distance.split(" ")
         distance = round(float(distance_array[1]), 2)
@@ -271,6 +286,7 @@ class Vehicle:
     # tested
 
     def filter_coordinates(self, df_offroutes, lon, lat):
+        """Find relevant route for selected petrol station"""
         df_offroute = df_offroutes[
             (df_offroutes["lat_destination"] == lat)
             & (df_offroutes["lon_destination"] == lon)
@@ -295,7 +311,7 @@ class Vehicle:
     def prepare_distance(
         self, origin, destination, station_post_code, combined, station_price
     ):
-
+        """Prepare data for the distance_analysis method"""
         try:
             data = DatabaseModel().read(
                 "journey_stations_route", f"{origin}-{destination}"
@@ -329,9 +345,11 @@ class Vehicle:
         duration,
         journey_cost,
     ):
+        """Information on how much it will cost to drive to a selected petrol station along a journey"""
         return f"It will take you {duration} minutes to reach {selected_station_brand} at {station_post_code}, {distance} miles from the journey route, and cost you £{journey_cost} in fuel to drive back and forth"
 
     def prepare_savings(self, capacity, tank, df_raw, df):
+        """Prepare data for savings_analysis method"""
         full_tank = capacity - tank
         min = round(df_raw["Price"].min(), 2)  # [8]
         max = df_raw["Price"].max()  # [8]
@@ -356,6 +374,7 @@ class Vehicle:
         return savings
 
     def get_tank_data(self):
+        """Get vehicle mileage information for mileage analysis"""
         capacity = self.data["Response"]["DataItems"]["TechnicalDetails"]["Dimensions"][
             "FuelTankCapacity"
         ]
@@ -384,6 +403,7 @@ class Vehicle:
         return data
 
     def tank_analysis(self, tank):
+        """Generate mileage analysis for vehicle using current fuel tank level specified by user"""
         d = self.get_tank_data()
         tank = float(tank)
         highway_commentary = f"Current fuel level will take you {round((tank * d['highway']),1)} miles on the highway"

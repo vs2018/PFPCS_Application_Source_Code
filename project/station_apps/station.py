@@ -37,7 +37,9 @@ import pymongo  # [3]
 
 
 class Station:
+    """Class generates the fuel price table, with current and predicted prices by petrol station, for the Nearest Station and Journey Saver Dashboards"""
     def __init__(self, origin, fuel_type, destination=None):
+        """Constructs a station object with fuel price results from a user query"""
         self.origin = Utility.to_uppercase(origin)
         self.destination = Utility.to_uppercase(destination)
         self.fuel_type = fuel_type
@@ -63,6 +65,7 @@ class Station:
 
     @staticmethod
     def address(value):  # [4]
+        """Generates an address, from a user provided postcode, by calling the Mapbox Geocoding API"""
         try:
             mapbox = Map(value)
             addresses = mapbox.generate_address()
@@ -80,6 +83,7 @@ class Station:
         return result
 
     def call_api(self, post_code=None):
+        """Fetches fuel prices from the UK Vehicle Data - Fuel Price API"""
         date = Utility.get_today_date()
         if post_code == None:
             try:
@@ -106,6 +110,7 @@ class Station:
         return data
 
     def update_table(self, df):
+        """Updates the fuel price DataFrame for the UIComponent class to create a Dash DataTable user interface componentd"""
         df.to_excel("Test_Station_get_data_df.xlsx")  # [6]
         df = Utility.drop_duplicate(df, ["PostCode"])
         df["TimeRecorded"] = df["TimeRecorded"].str.split().str[0]  # [7]
@@ -126,6 +131,7 @@ class Station:
         return {"df": df, "df1": df1}
 
     def update(self, latlon, date, data, d, prediction, p):
+        """Updates the station object with petrol station fuel price attributes"""
         self.data["Lat"].append(latlon[1])
         self.data["Lon"].append(latlon[0])
         self.data["Date"].append(date)
@@ -148,6 +154,7 @@ class Station:
         return None
 
     def reset(self):
+        """Resets station object for a new petrol station fuel price attributes"""
         self.data = {
             "Date": [],
             "SearchPostCode": [],
@@ -170,12 +177,14 @@ class Station:
         return None
 
     def get_route_data(self, destination):
+        """Fetches petrol station routes from application persistence layer"""
         today = Utility.get_today_date()
         data = DatabaseModel().read("directions", f"{self.origin}-{destination}")
         df = Utility.to_dataframe(data)
         return df
 
     def call_processor(self, data, date):
+        """Calls Processor class to generate a DataFrame with historical and predicted fuel prices for all petrol stations found"""
         for d in data["Response"]["DataItems"]["FuelStationDetails"]["FuelStationList"]:
             for p in d["FuelPriceList"]:
                 if p["FuelType"] == self.fuel_type:
@@ -206,7 +215,9 @@ class Station:
 
 
 class JourneyStation(Station):
+    """Inherits from the parent Station class and is responsible for generating the Journey Saver Dashboard map"""
     def __init__(self, origin, fuel_type, destination):
+        """Constructor to generate an object with fuel price and map data for the Journey Saver Dashboard"""
         super().__init__(origin, fuel_type, destination)
         self.route_data = {
             "origin": [],
@@ -222,6 +233,7 @@ class JourneyStation(Station):
 
     @staticmethod
     def generate_station_post_codes(df):
+        """Generate list of postcodes that fall on the user provided journey route"""
         df.to_excel("Test_Station_get_unique_stations_df.xlsx")  # [6]
         unique_postcodes = (
             df["Station-PostCode"].drop_duplicates().values.tolist()
@@ -239,6 +251,7 @@ class JourneyStation(Station):
         return postcodes
 
     def reset_route(self):
+        """Reset JourneyStation object to save a new petrol station route"""
         self.route_data = {
             "origin": [],
             "destination": [],
@@ -253,6 +266,7 @@ class JourneyStation(Station):
         return None
 
     def update_route(self, closest_coordinate, route_information, k):
+        """Update JourneyStation object with a new petrol station route"""
         self.route_data["origin"].append(self.origin)
         self.route_data["destination"].append(self.destination)
         self.route_data["lat_origin"].append(closest_coordinate[k][1])
@@ -266,6 +280,7 @@ class JourneyStation(Station):
         return None
 
     def generate_directions(self, df, df_route, i):  # [14]
+        """Generate routes, using Mapbox Directions API, to each petrol station falling along the journey"""
         df.to_excel("Test_Journey_get_offroute_data_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_get_offroute_data_df_route.xlsx")  # [6]
         station_lat, station_lon = df["Lat"].iloc[i], df["Lon"].iloc[i]  # [13]
@@ -298,6 +313,7 @@ class JourneyStation(Station):
         return {"distances": distances, "route_responses": route_responses}
 
     def generate_route_information(self, df, df_route):
+        """Generate route information: distance and duration"""
         df.to_excel("Test_Journey_save_station_routes_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_save_station_routes_df_route.xlsx")  # [6]
         off_routes = []
@@ -357,6 +373,7 @@ class JourneyStation(Station):
     # tested
 
     def get_route_information(self, df):
+        """Fetch petrol station from application persistence layer"""
         data = DatabaseModel().read(
             "journey_route_information", f"{self.origin}-{self.destination}"
         )
@@ -377,6 +394,7 @@ class JourneyStation(Station):
     # tested
 
     def generate_routes(self, df_route, df):
+        """Generate user interface routes on a map using UIComponent class"""
         df.to_excel("Test_Journey_map_routes_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_map_routes_df_route.xlsx")  # [6]
         routes = []
@@ -394,6 +412,7 @@ class JourneyStation(Station):
         return routes
 
     def generate_map_data(self, df):
+        """Generate a map with the journey route, and routes to each petrol station, from user inputs"""
         df.to_excel("Test_Journey_map_df.xlsx")  # [6]
         stations_list = super().get_route_data(self.destination)
 
@@ -434,6 +453,7 @@ class JourneyStation(Station):
         return data
 
     def call_api(self, post_codes):
+        """Call parent class to fetch fuel prices for petrol stations along a journey"""
         batch_data = []
         for post_code in post_codes:
             data = super().call_api(post_code)
@@ -448,6 +468,7 @@ class JourneyStation(Station):
         return batch_data
 
     def get_directions(self):
+        """Generate a DataFrame with route coordinates using the Mapbox Directions API"""
         try:
             data = DatabaseModel().read(
                 "directions", f"{self.origin}-{self.destination}"
@@ -459,6 +480,7 @@ class JourneyStation(Station):
         return df
 
     def get_places(self, df_directions):
+        """Generate a DataFrame, using Google Places API, with petrol station coordinates found along a journey"""
         try:
             data = DatabaseModel().read("places", f"{self.origin}-{self.destination}")
             df = Utility.to_dataframe(data)
@@ -468,6 +490,7 @@ class JourneyStation(Station):
         return df
 
     def get_journey_data(self):
+        """Generate fuel prices and map data for the Journey Saver Dashboard"""
         df_directions = self.get_directions()
         df_places = self.get_places(df_directions)
         post_codes = JourneyStation.generate_station_post_codes(df_places)
@@ -485,6 +508,7 @@ class JourneyStation(Station):
         return df
 
     def save(self, post_codes):
+        """Call parent class to generate DataFrame with historical and predicted fuel prices"""
         post_codes = self.remove_invalid_post_code(post_codes)
         batch_data = self.call_api(post_codes)
         date = Utility.get_today_date()
@@ -502,6 +526,7 @@ class JourneyStation(Station):
         return df
 
     def remove_invalid_post_code(self, post_codes):
+        """Filter petrol station postcodes without an 'A' due to Fuel Price API restriction"""
         for post_code in post_codes:
             if "A" not in post_code:
                 post_codes.remove(post_code)
@@ -509,10 +534,13 @@ class JourneyStation(Station):
 
 
 class NearestStation(Station):
+    """Inherits from the parent Station Class and is responsible for generating the data for the Nearest Station Dashboard"""
     def __init__(self, post_code, fuel_type):
+        """Constructs an object with user inputs for the Nearest Station Dashboard"""
         super().__init__(post_code, fuel_type)
 
     def get_station_data(self, station):
+        """Fetch fuel prices from the applications persistence layer"""
         today = Utility.get_today_date()
         data = DatabaseModel().read(
             "station_fuel_prices", f"{today}-{self.origin}-{self.fuel_type}"
@@ -522,6 +550,7 @@ class NearestStation(Station):
         return df[(df["PostCode"] == station)]  # [17]
 
     def generate_brand_analysis(self, data):
+        """Calculates proportion of supermarkets vs other fuel retailers found in a user query, for a pie chart"""
         df = Utility.to_dataframe(data)
         df = Utility.drop_duplicate(df, ["Post Code"])
         total = len(df)
@@ -536,6 +565,7 @@ class NearestStation(Station):
         return {"supermarket": supermarket, "non_supermarket": non_supermarket}
 
     def generate_metrics(self, data, slider, radio):
+        """Generates data for the petrol station analysis bar chart"""
         df = Utility.to_dataframe(data)
         df = df[df["Distance"] <= slider]  # [17]
         price_min, price_max = df["Price"].min(), df["Price"].max()  # [18]
@@ -559,6 +589,7 @@ class NearestStation(Station):
         return {"df": df, "min": min, "max": max}
 
     def generate_search_analysis(self, rows):
+        """Generates data highlighting fuel price statistics from a particular user query"""
         df = Utility.to_dataframe(rows)
         brand_today = df[df["Price"] == df["Price"].min()]["Brand"].iloc[
             0
@@ -593,7 +624,7 @@ class NearestStation(Station):
         return analysis
 
     def generate_station_timeseries(self, hoverData, rows):
-
+        """Generates a time series for a user selected petrol station, showing historical and predicted fuel prices"""
         df_rows = Utility.to_dataframe(rows)
 
         try:
@@ -632,6 +663,7 @@ class NearestStation(Station):
         return data
 
     def generate_routes(self, stations_list):
+        """Generates routes, along with distance and duration information, between user entered postcode and petrol stations found in the query"""
         routes = []
         for idx, station in enumerate(stations_list):
             try:
@@ -659,6 +691,7 @@ class NearestStation(Station):
 
     # tested
     def generate_map_data(self, df):
+        """Generates data to render a map on the Nearest Station dashboard"""
         df.to_excel("Test_NearestPump_map_input.xlsx")  # [6]
         stations_list = (
             df[df["SearchPostCode"] == self.origin]["Post Code"].unique().tolist()
@@ -691,6 +724,7 @@ class NearestStation(Station):
         return data
 
     def get_stations(self):
+        """Fetches fuel prices from the applications persistence layer"""
         try:
             today = Utility.get_today_date()
             data = DatabaseModel().read(
@@ -702,6 +736,7 @@ class NearestStation(Station):
         return df
 
     def save(self):
+        """Generates a DataFrame with historical and predicted fuel prices for a particular user query"""
         data = super().call_api()
         date = Utility.get_today_date()
         super().call_processor(data, date)

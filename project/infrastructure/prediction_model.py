@@ -125,6 +125,7 @@ class SARIMAXModel(Model):
 
 
 class PredictionModel:
+    """Class trains and evaluates 4 models (ARIMA,SARIMAX,ExponentialSmoothing,RNN) and selects the model to generate the prediction with the lowest RMSE value"""
     def __init__(
         self,
         df,
@@ -136,6 +137,7 @@ class PredictionModel:
         post_code=None,
         sarimax=False,
     ):
+        """Construct a predictive model object with a time series DataFrame and user query inputs"""
         self.df = df
         self.name = name
         self.horizon = horizon
@@ -150,18 +152,21 @@ class PredictionModel:
         self.stat_error = None
 
     def prepare(self):  # [17]
+        """Drop DataFrame rows with missing data"""
         self.df.dropna(inplace=True)
         column = self.fuel_type + "-wholesale"
         self.df.drop([column], axis=1, inplace=True)
         return None
 
     def sarimax_model(self):
+        """Generate RMSE value and prediction with SARIMAX model"""
         sarimax_model = SARIMAXModel(self.fuel_type, self.horizon, self.df)
         prediction = sarimax_model.predict()
         self.sarimax_error = sarimax_model.error
         return prediction
 
     def arima_model(self):
+        """Generate RMSE value and prediction with ARIMA model"""
         arima_model = ARIMAModel(
             self.df, self.name, self.horizon, self.fuel_type, self.brand, self.post_code
         )
@@ -170,6 +175,7 @@ class PredictionModel:
         return prediction
 
     def rnn_model(self):
+        """Generate RMSE value and prediction with RNN model"""
         if self.frequency == "D":
             rnn_model = RNNModel(1, self.df, self.horizon, self.name, "D")
         elif self.frequency == "M":
@@ -179,6 +185,7 @@ class PredictionModel:
         return prediction
 
     def stat_model(self):
+        """Generate RMSE value and prediction with ExponentialSmoothing model"""
         stat_model = ExponentialSmoothingModel(
             self.df, self.name, self.horizon, self.fuel_type, self.brand, self.post_code
         )
@@ -187,6 +194,7 @@ class PredictionModel:
         return prediction
 
     def evaluate(self):
+        """Evaluate model generating lowest RMSE value"""
         if self.sarimax == True:
             error_values = [
                 self.arima_error,
@@ -204,10 +212,12 @@ class PredictionModel:
         return min(range(len(error_values)), key=error_values.__getitem__)  # [20]
 
     def update_rnn_model(self):
+        """Update RNN time series DataFrame with petrol station attributes"""
         rnn_model = RNNModel(1, self.df, self.horizon, self.name, self.frequency)
         return rnn_model.update(self.df, self.fuel_type, self.brand, self.post_code)
 
     def predict(self):
+        """Generate time series DataFrame with prediction using model producing lowest RMSE value"""
         if self.sarimax == True:
             sarimax_model_df = self.sarimax_model()
             self.prepare()
