@@ -224,10 +224,10 @@ import time
 
 def api_call():
     for code in postcodes_m:
-        #Adapted from: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
+        #Source: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
         result = requests.get(f'https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={code}')
         json_object = result.json()
-        #Adapted from: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
+        #Source: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
         with open(f'data-{code}.json', 'w') as outfile:
             json.dump(json_object, outfile, indent=2)
         #Source: https://www.pythoncentral.io/pythons-time-sleep-pause-wait-sleep-stop-your-code/

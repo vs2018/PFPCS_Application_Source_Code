@@ -14,15 +14,16 @@
 # [14] Adapted from: Author: shadi, Date:Sep 30 '17 at 8:46, URL:https://stackoverflow.com/questions/17001389/pandas-resample-documentation
 # [15] Adapted from: https://machinelearningmastery.com/resample-interpolate-time-series-data-python/
 # [16] Adapted from: Author: Matti John, Date:Jun 8 '13 at 16:20, URL:https://stackoverflow.com/questions/17001389/pandas-resample-documentation
-# [17] Adapted from: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/discovery_v1.py
+# [17] Source: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/discovery_v1.py
 # [18] Adapted from: Author:Paul H, Date: May 17 '18 at 18:38, URL:https://stackoverflow.com/questions/50397384/groupby-at-index-level-in-pandas
 # [19] Adapted from: Author:Songhua Hu, Date:Jan 23 at 7:20, URL:https://stackoverflow.com/questions/22407798/how-to-reset-a-dataframes-indexes-for-all-groups-in-one-step
 # [20] Adapted from: Author: Make42, Date:Nov 9 '17 at 13:57, URL:https://stackoverflow.com/questions/46728152/upsample-timeseries-in-pandas-with-interpolation
 # [21] Adapted from: Author: mkln, Date: Dec 10 '13 at 10:19, URL: https://stackoverflow.com/questions/20490274/how-to-reset-index-in-a-pandas-data-frame
 # [22] Source: Author:Akshay, Date:Nov 28 '17 at 0:28, URL:https://stackoverflow.com/questions/47522009/make-directory-in-python
 # [23] Adapted from: Author: Eli Courtwright, Date: Sep 18 '08 at 13:11, URL: https://stackoverflow.com/questions/89228/calling-an-external-command-in-python
-# [24] Wordcloud library used, URL: https://github.com/amueller/word_cloud
-
+# [24] Source: Wordcloud library used, URL: https://github.com/amueller/word_cloud
+# [25] Source: https://towardsdatascience.com/random-forest-in-python-24d0893d51c0?gi=10839cfeb9a9
+# [26] Source: Author: Andy Hayden, Date: Jun 21 '13 at 18:51, URL: https://stackoverflow.com/questions/17241004/how-do-i-convert-a-pandas-series-or-index-to-a-numpy-array
 
 import datetime
 import pandas as pd  # [1]
@@ -72,7 +73,7 @@ class WebScraper:
         """Construct a scraper object with the url of the web page to scrape"""
         self.url = url
 
-    def get_html(self, url):  # [8]
+    def get_html(self, url): # [8]
         """Instantiate BeautifulSoup to scrape html from a url"""
         try:
             with closing(get(url, stream=True)) as response:
@@ -203,7 +204,7 @@ class NaturalLanguage:
 
     def prepare_timeseries(self, classifications, dates):
         """Construct a time series DataFrame to make a prediction"""
-        dates = [datetime.datetime.strptime(date, "%Y-%m-%d") for date in dates]  # [11]
+        dates = [datetime.datetime.strptime(date, "%Y-%m-%d") for date in dates]  # [11] [25]
         oldest = min(dates)
         today = Utility.get_today_date()
         idx = pd.date_range(str(oldest), periods=len(classifications), freq="M")  # [12]
@@ -309,7 +310,6 @@ class NewsArticle(NaturalLanguage):
             country = "N/A"
         return {"sentences": sentences, "country": country}
 
-    # tested
     def parse_api_data(self, data):
         """Constructs a news article dictionary with relevant details"""
         results = []
@@ -328,7 +328,6 @@ class NewsArticle(NaturalLanguage):
                 )
         return results
 
-    # tested
 
     def generate_timeseries(self, scores):
         """Generates a time series DataFrame with classifications of news articles found in a API query"""
@@ -431,8 +430,8 @@ class NewsArticle(NaturalLanguage):
         model = PredictionModel(df, 1, "Classification", "unleaded", "D", "N/A", "N/A")
         forecast = model.predict()
         prediction = super().process_predictions(forecast)
-        oldest = str(df.index[0]).split(" ")[0]  # [9]
-        latest = str(df.index[-1]).split(" ")[0]  # [9]
+        oldest = str(df.index[0]).split(" ")[0] #[26]
+        latest = str(df.index[-1]).split(" ")[0] #[26]
         return {
             "movement": prediction["movement"],
             "colour": prediction["colour"],

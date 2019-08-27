@@ -516,8 +516,8 @@ class TestVehicle(object):
         assert (
             (d["station_post_code"] == "BA11 4NZ")
             and (d["df_directions"]["Duration-Value"].iloc[0] >= 0)  # [4]
-            and (d["df_station"]["Brand"].iloc[0] == "ESSO")
-            and (d["df"]["DistanceFromSearchPostcode"].iloc[0] == 0.07)
+            and (d["df_station"]["Brand"].iloc[0] == "ESSO") # [4]
+            and (d["df"]["DistanceFromSearchPostcode"].iloc[0] == 0.07) # [4]
         )  # [4]
 
     def test_analysis(self, car):

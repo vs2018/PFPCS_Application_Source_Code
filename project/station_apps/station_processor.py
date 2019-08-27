@@ -12,16 +12,17 @@
 # [12] Source: Author:ely, Date:Jul 2 '12 at 2:43, URL:https://stackoverflow.com/questions/11285613/selecting-multiple-columns-in-a-pandas-dataframe
 # [13] Adapted from: Author:chrisb, Date:Nov 5 '14 at 17:50, URL:https://stackoverflow.com/questions/26763344/convert-pandas-column-to-datetime
 # [14]: Source: Author:Michael Hoff, Date:Jul 23 '16 at 13:42, URL:https://stackoverflow.com/questions/38542419/could-pandas-use-column-as-index
-# [15] Source: Author: Cole Diamond, Date: May 31 '17 at 14:59, https://stackoverflow.com/questions/21738566/how-to-set-a-variable-to-be-todays-date-in-python-pandas
+# [15] Source: Author: stallingOne, Date: Apr 26 at 13:46, URL:https://stackoverflow.com/questions/21738566/how-to-set-a-variable-to-be-todays-date-in-python-pandas
 # [16] Adapted from: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html
 # [17] Source: Author: WeNYoBen, Date:Dec 26 '18 at 3:48, URL:https://stackoverflow.com/questions/53927219/pandas-concat-two-data-frames-one-with-and-one-without-headers
 # [18] Adapted from: https://machinelearningmastery.com/resample-interpolate-time-series-data-python/
 # [19] Adapted from: Author: Matti John, Date:Jun 8 '13 at 16:20, URL:https://stackoverflow.com/questions/17001389/pandas-resample-documentation
 # [20] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
+# [21] Adapted from: Author: Giuseppe Salerno, Date: Jun 6 '18 at 15:31, URL: https://stackoverflow.com/questions/50724231/pandas-resample-function-issue-from-minute-to-millisecond-ersampling
 
-import requests
+import requests #[1]
 import json
-import pandas as pd
+import pandas as pd #[2]
 from ..infrastructure.prediction_model import PredictionModel
 from .map import Map
 
@@ -173,7 +174,7 @@ class Processor:
         df_today.set_index("Date", inplace=True)  # [14]
         df2 = pd.concat([df2, df_today])  # [17]
         df2 = df2.loc[~df2.index.duplicated(keep="first")]  # [11]
-        df2 = df2.resample(rule="1D").interpolate()  # [18] [19]
+        df2 = df2.resample(rule="1D").interpolate()  # [18] [19] [21]
         return df2
 
     def get_predictions(self):

@@ -1,7 +1,7 @@
-# This is the layout web page for Journey Saver Dashboard. It contains Dash HTML Components that form the content of the web page.
+# This is the layout web page for Journey Saver Dashboard. It contains Dash HTML Components (see tag [1] below) that form the content of the web page.
 # To stylise the web page, Dash Bootstrap Components (dbc - see tag [2] below) have been used.
 # Dash Bootstrap Components is based on the original Bootstrap (source: https://getbootstrap.com/)
-# Dash Bootstrap Components is an interface to enable writing bootstrap using python in Dash web applications.
+# Dash Bootstrap Components allows you to write Bootstrap using Python in Dash web applications.
 
 # [1] Dash HTML Component library to write html code, URL: https://dash.plot.ly/dash-html-components
 # [2] Dash Bootstrap Components library: https://dash-bootstrap-components.opensource.faculty.ai/
@@ -17,6 +17,7 @@
 # [8] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/button
 # [9] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/form
 # [10] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/jumbotron
+# [11] Source: https://dash.plot.ly/dash-core-components/loading_component
 
 
 import dash_core_components as dcc  # [3]
@@ -102,7 +103,7 @@ jumbotron_result = dbc.Jumbotron(
                                 id="loading-journey-map",
                                 children=[html.Div(id="map-card")],
                                 type="default",
-                            ),
+                            ), #[11]
                             width=5,
                         ),
                         dbc.Col(
@@ -110,7 +111,7 @@ jumbotron_result = dbc.Jumbotron(
                                 id="loading-journey-table",
                                 children=[html.Div(id="table-card")],
                                 type="default",
-                            ),
+                            ), #[11]
                             width=7,
                         ),
                     ]
@@ -122,7 +123,7 @@ jumbotron_result = dbc.Jumbotron(
                                 id="loading-journey-analysis",
                                 children=[html.Div(id="analysis-card")],
                                 type="default",
-                            ),
+                            ), #[11]
                             width=12,
                         )
                     ],

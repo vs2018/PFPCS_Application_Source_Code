@@ -4,10 +4,10 @@
 # [4] Adapted from: Author:chriddyp, Date:Aug '17, URL:https://community.plot.ly/t/show-hide-radio-and-form-elements-in-a-menu/5227
 # [5] Adapted from: https://dash.plot.ly/dash-core-components/button
 # [6] Adapted from: Author:alishobeiri, Date:Aug '17, URL:https://community.plot.ly/t/how-to-integrate-google-maps-address-autocompletion-in-dash/5515/2
-# [7] Adapted from: https://community.plot.ly/t/prepopulate-a-hidden-div/9120/3
+# [7] Adapted from: Author: kritho, Date: Mar '18, URL: https://community.plot.ly/t/prepopulate-a-hidden-div/9120/3
 # [8] Source: Dash Multi-page app layout, URL:https://dash.plot.ly/urls
 # [9] Adapted from: Dash callbacks, URL: https://dash.plot.ly/getting-started-part-2
-# [10] Adapted from: "Dash Sharing State Between Callbacks",URL:https://dash.plot.ly/sharing-data-between-callbacks
+# [10] Adapted from: https://dash.plot.ly/sharing-data-between-callbacks
 # [11] Adapted from: Dash DataTable, URL: https://dash.plot.ly/datatable/interactivity
 # [12] Adapted from: Interactive Visualisations, URL: https://dash.plot.ly/interactive-graphing
 

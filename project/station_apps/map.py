@@ -9,9 +9,9 @@
 # [9] Source: Author: waitingkuo, Date: May 10 '13 at 7:07, URL:https://stackoverflow.com/questions/16476924/how-to-iterate-over-rows-in-a-dataframe-in-pandas
 
 
-from mapbox import Geocoder
-import googlemaps
-from mapbox import Directions
+from mapbox import Geocoder #[1]
+import googlemaps #[2]
+from mapbox import Directions #[3]
 from ..infrastructure.database import DatabaseModel
 from ..infrastructure.utility import Utility
 from .gps import GPS

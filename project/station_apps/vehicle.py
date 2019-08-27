@@ -1,5 +1,5 @@
 # [1] Requests library - get function to send HTTP request, URL: https://2.python-requests.org/en/master/
-# [2] Adapted from: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
+# [2] Source: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
 # [3] Source: https://www.metric-conversions.org/volume/uk-gallons-to-liters.htm
 # [4] Adapted from: Author:jezrael, Date:Jun 11 '17 at 9:03, URL:https://stackoverflow.com/questions/44482095/dataframe-filtering-rows-by-column-values
 # [5] Source: Author: EdChum, Date:Jun 13 '16 at 10:45, URL:https://stackoverflow.com/questions/37787698/how-to-sort-pandas-dataframe-from-one-column
@@ -283,7 +283,6 @@ class Vehicle:
             "journey_cost": journey_cost,
         }
 
-    # tested
 
     def filter_coordinates(self, df_offroutes, lon, lat):
         """Find relevant route for selected petrol station"""

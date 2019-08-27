@@ -1,7 +1,7 @@
-# This is the layout web page for Snapshot Dashboard. It contains Dash HTML Components that form the content of the web page.
+# This is the layout web page for Snapshot Dashboard. It contains Dash HTML Components (see tag [1] below) that form the content of the web page.
 # To stylise the web page, Dash Bootstrap Components (dbc - see tag [2] below) have been used.
 # Dash Bootstrap Components is based on the original Bootstrap (source: https://getbootstrap.com/)
-# Dash Bootstrap Components is an interface to enable writing bootstrap using python in Dash web applications.
+# Dash Bootstrap Components allows you to write Bootstrap using Python in Dash web applications.
 
 # [1] Dash HTML Component library to write html code, URL: https://dash.plot.ly/dash-html-components
 # [2] Dash Bootstrap Components library: https://dash-bootstrap-components.opensource.faculty.ai/
@@ -120,70 +120,6 @@ region_card = [
                 ),
                 className="card-text",
             ),
-            html.P(
-                dbc.Row(
-                    [
-                        dbc.Col(
-                            dcc.Dropdown(
-                                id="region-dropdown",
-                                options=[
-                                    {
-                                        "label": "Northern Ireland",
-                                        "value": "Northern Ireland",
-                                    },
-                                    {"label": "Scotland", "value": "Scotland"},
-                                    {"label": "Wales", "value": "Wales"},
-                                    {"label": "North East", "value": "North East"},
-                                    {"label": "North West", "value": "NW"},
-                                    {
-                                        "label": "Yorkshire & Humberside",
-                                        "value": "Yorkshire & Humberside",
-                                    },
-                                    {
-                                        "label": "West Midlands",
-                                        "value": "West Midlands",
-                                    },
-                                    {
-                                        "label": "East Midlands",
-                                        "value": "East Midlands",
-                                    },
-                                    {
-                                        "label": "Essex and East Anglia",
-                                        "value": "Essex and East Anglia",
-                                    },
-                                    {"label": "South East", "value": "South East"},
-                                    {"label": "South West", "value": "South West"},
-                                    {"label": "London", "value": "London"},
-                                ],
-                                value="",
-                                placeholder="Select region",
-                            )
-                        ),
-                        dbc.Col(
-                            dcc.Dropdown(
-                                id="region-fuel-dropdown",
-                                options=[
-                                    {"label": "Diesel", "value": "regional-diesel.csv"},
-                                    {
-                                        "label": "Unleaded",
-                                        "value": "regional-petrol.csv",
-                                    },
-                                    {
-                                        "label": "Premium Unleaded",
-                                        "value": "regional-premium-petrol.csv",
-                                    },
-                                    {"label": "LPG", "value": "regional-lpg.csv"},
-                                ],
-                                value="",
-                                placeholder="Select fuel type",
-                            )
-                        ),
-                        dbc.Button(id="submit-button", n_clicks=0, children="Predict"),
-                    ]
-                ),
-                className="card-text",
-            ),
-            html.P(id="region-output"),
         ]
     ),
 ]
@@ -288,7 +224,7 @@ twitter_handle_card = [
             html.P("Select Twitter handle(s)", className="card-title"),
             html.Div(
                 [
-                    dcc.Dropdown(
+                    dcc.Dropdown( #[3]
                         id="timeline-dropdown",
                         options=[
                             {"label": "BP", "value": "BP_Press"},
@@ -303,7 +239,7 @@ twitter_handle_card = [
                         value=["BP_Press", "Shell"],
                         multi=True,
                     ),
-                    dcc.Graph(id="live-update-graph2"),
+                    dcc.Graph(id="live-update-graph2"), #[3]
                 ]
             ),
         ]

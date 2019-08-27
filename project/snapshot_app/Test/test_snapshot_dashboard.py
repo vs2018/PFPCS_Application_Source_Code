@@ -5,7 +5,7 @@
 # [5] Adapted from: https://plot.ly/python/bar-charts/
 # [6] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
 # [7] Source: Author:rslite, Date:Sep 17 '08 at 12:57: URL:https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions/82852#82852
-# [8] Adapted from: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/discovery_v1.py
+# [8] Source: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/discovery_v1.py
 
 
 import pytest  # [1]
@@ -246,7 +246,6 @@ class TestNewsArticle(object):
 
     def test_generate_wordcloud(self):  # [7]
         from pathlib import Path
-
         image = Path("assets/wordcloud.png")
         if image.is_file():
             result = True
@@ -263,7 +262,7 @@ class TestNewsArticle(object):
         print(df)
         assert len(df.index) > 0
 
-    def test_parse_api_data(self, discovery):  # [8]
+    def test_parse_api_data(self, discovery):
         data = discovery.discovery.connection.query(
             "system",
             discovery.discovery.news_collection[-1]["collection_id"],
@@ -272,7 +271,7 @@ class TestNewsArticle(object):
             count=50,
             highlight=True,
             deduplicate=True,
-        ).get_result()
+        ).get_result() # [8]
         results = discovery.parse_api_data(data)
         print(results)
         assert len(results) > 0

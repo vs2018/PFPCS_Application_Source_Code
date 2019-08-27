@@ -1,7 +1,7 @@
-# This is the layout web page for the Nearest Dashboard. It contains Dash HTML Components that form the content of the web page.
+# This is the layout web page for Nearest Station Dashboard. It contains Dash HTML Components (see tag [1] below) that form the content of the web page.
 # To stylise the web page, Dash Bootstrap Components (dbc - see tag [2] below) have been used.
 # Dash Bootstrap Components is based on the original Bootstrap (source: https://getbootstrap.com/)
-# Dash Bootstrap Components is an interface to enable writing bootstrap using python in Dash web applications.
+# Dash Bootstrap Components allows you to write Bootstrap using Python in Dash web applications.
 
 # [1] Dash HTML Component library to write html code, URL: https://dash.plot.ly/dash-html-components
 # [2] Dash Bootstrap Components library: https://dash-bootstrap-components.opensource.faculty.ai/
@@ -17,7 +17,8 @@
 # [8] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/button
 # [9] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/form
 # [10] Adapted from: https://dash-bootstrap-components.opensource.faculty.ai/l/components/jumbotron
-
+# [11] Source: https://dash.plot.ly/dash-core-components/loading_component
+# [12] Source: https://dash.plot.ly/dash-core-components/slider
 
 import dash_core_components as dcc  # [3]
 import dash_html_components as html  # [1]
@@ -69,7 +70,7 @@ card_details = [
                 dbc.Row(
                     [
                         dbc.Col(
-                            html.Div(
+                            html.Div( #[1]
                                 dcc.Dropdown(  # [3]
                                     id="dropdown-nearest", placeholder="Select Address"
                                 )
@@ -170,7 +171,7 @@ card_content_bar = [
             ),  # [1]
             html.Div(dbc.Label("Select Distance Radius")),  # [1] [9]
             html.Div(
-                dcc.Slider(
+                dcc.Slider( #[3] [12]
                     id="slider-metrics",
                     min=0,
                     max=5,
@@ -221,7 +222,7 @@ jumbotron_result_app1 = dbc.Jumbotron(
                     [
                         dbc.Col(html.Div(id="data-table"), width=7),  # [1] [5]
                         dbc.Col(
-                            dcc.Loading(
+                            dcc.Loading( #[11]
                                 id="loading-cards",
                                 children=[html.Div(html.Div(id="summary_cards"))],
                                 type="default",
@@ -246,7 +247,7 @@ jumbotron_result2_app1 = dbc.Jumbotron(
                 dbc.Row(
                     [
                         dbc.Col(
-                            dcc.Loading(
+                            dcc.Loading( #[11]
                                 id="loading-map",
                                 children=[
                                     html.Div(
@@ -258,7 +259,7 @@ jumbotron_result2_app1 = dbc.Jumbotron(
                                     )  # [1]
                                 ],
                                 type="default",
-                            ),  # [3]
+                            ),  # [3] [11]
                             width=6,
                         ),  # [5]
                         dbc.Col(

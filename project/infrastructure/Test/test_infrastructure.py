@@ -1,11 +1,11 @@
 # [1] Pytest library is used to write the unit and integration tests using @pytest.fixture and the in built python assert statement, URL: https://docs.pytest.org/en/latest/
 # [2] Pandas library used for creating a DataFrame, URL: https://pandas.pydata.org/pandas-docs/stable/
 # [3] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html
-# [4] Adapted from: File:06-General-Forecasting-Models/05-ARMA-and-ARIMA.ipynb, URL: https://www.udemy.com/python-for-time-series-data-analysis/
+# [4] Adapted from: Notebook:06-General-Forecasting-Models/05-ARMA-and-ARIMA.ipynb, URL: https://www.udemy.com/python-for-time-series-data-analysis/
 # [5] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.dropna.html
 # [6] Adapted from: Author:Andy Hayden, Date:May 24 '13 at 7:31, URL:https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
 # [7] Adapted from: Author:LondonRob, Date:Aug 9 '13 at 11:12, URL:https://stackoverflow.com/questions/13411544/delete-column-from-pandas-dataframe
-# [8] Adapted from: Notebook:07-Deep-Learning-Models/01-RNN-Example.ipynb, URL: https://www.udemy.com/python-for-time-series-data-analysis/
+# [8] Source: Notebook:07-Deep-Learning-Models/01-RNN-Example.ipynb, URL: https://www.udemy.com/python-for-time-series-data-analysis/
 
 import pytest  # [1]
 from utility import *
@@ -42,9 +42,9 @@ class TestExponentialSmoothingModel(object):
         model = ExponentialSmoothingModel(
             df, "Price", 1, "Unleaded", "ASDA", "BA11 5LA"
         )
-        l_updated = len(model.df) - model.horizon
-        train = model.df.iloc[:l_updated]
-        test = model.df.iloc[l_updated:]
+        l_updated = len(model.df) - model.horizon #[4]
+        train = model.df.iloc[:l_updated] #[4]
+        test = model.df.iloc[l_updated:] #[4]
         return (train, test)
 
     def test_calculate_error(self, model, data):
@@ -249,18 +249,18 @@ class TestRNNModel(object):
     @pytest.fixture
     def engine(self):
         df = AveragePrice("unleaded", 1).prepare_timeseries()
-        df = df.dropna()
+        df = df.dropna() #[5]
         df = df.drop(["unleaded-wholesale"], axis=1)  # [7]
         return RNNModel(1, df, 1, "unleaded", "M")
 
     def test_get_model(self, engine):  # [8]
-        length = len(engine.df) - engine.horizon
-        train = engine.df.iloc[:length]
-        test = engine.df.iloc[length:]
-        scaler = MinMaxScaler()
-        scaler.fit(train)
-        scaled_train = scaler.transform(train)
-        scaled_test = scaler.transform(test)
+        length = len(engine.df) - engine.horizon #[4]
+        train = engine.df.iloc[:length] #[4]
+        test = engine.df.iloc[length:] #[4]
+        scaler = MinMaxScaler() # [8]
+        scaler.fit(train) # [8]
+        scaled_train = scaler.transform(train) # [8]
+        scaled_test = scaler.transform(test) # [8]
         model = engine.get_model(scaled_train, scaled_test, engine.horizon, 1)
         print(model)
         assert len(str(model)) > 5
@@ -269,10 +269,10 @@ class TestRNNModel(object):
         length = len(engine.df) - engine.horizon
         train = engine.df.iloc[:length]
         test = engine.df.iloc[length:]
-        scaler = MinMaxScaler()
-        scaler.fit(train)
-        scaled_train = scaler.transform(train)
-        scaled_test = scaler.transform(test)
+        scaler = MinMaxScaler() # [8]
+        scaler.fit(train) # [8]
+        scaled_train = scaler.transform(train) # [8]
+        scaled_test = scaler.transform(test) # [8]
         model = engine.get_model(scaled_train, scaled_test, engine.horizon, 1)
         test_predictions = engine.compile(test, scaled_train, model)
         print(test_predictions)
@@ -282,10 +282,10 @@ class TestRNNModel(object):
         length = len(engine.df) - engine.horizon
         train = engine.df.iloc[:length]
         test = engine.df.iloc[length:]
-        scaler = MinMaxScaler()
-        scaler.fit(train)
-        scaled_train = scaler.transform(train)
-        scaled_test = scaler.transform(test)
+        scaler = MinMaxScaler() # [8]
+        scaler.fit(train) # [8]
+        scaled_train = scaler.transform(train) # [8]
+        scaled_test = scaler.transform(test) # [8]
         model = engine.get_model(scaled_train, scaled_test, engine.horizon, 1)
         test_predictions = engine.compile(test, scaled_train, model)
         data = scaler.inverse_transform(test_predictions)
@@ -316,13 +316,13 @@ class TestRNNModel(object):
         assert result == None
 
     def test_fit(self, engine):  # [8]
-        length = len(engine.df) - engine.horizon
-        train = engine.df.iloc[:length]
-        test = engine.df.iloc[length:]
-        scaler = MinMaxScaler()
-        scaler.fit(train)
-        scaled_train = scaler.transform(train)
-        scaled_test = scaler.transform(test)
+        length = len(engine.df) - engine.horizon #[4]
+        train = engine.df.iloc[:length] #[4]
+        test = engine.df.iloc[length:] #[4]
+        scaler = MinMaxScaler() # [8]
+        scaler.fit(train) # [8]
+        scaled_train = scaler.transform(train) # [8]
+        scaled_test = scaler.transform(test) # [8]
         model = engine.fit(scaled_train, scaled_test, engine.horizon, 1)
         print(model)
         assert len(str(model)) > 5

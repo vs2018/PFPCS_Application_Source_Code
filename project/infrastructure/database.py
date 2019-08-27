@@ -4,7 +4,7 @@
 # [4] Adapted from: https://realpython.com/introduction-to-mongodb-and-python/
 # [5] Source: https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
 # [6] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html
-# [7] Adapted from: https://api.mongodb.com/python/current/examples/gridfs.html
+# [7] Soure: https://api.mongodb.com/python/current/examples/gridfs.html
 # [8] Source: Author: therahulkumar, Date: Dec 22 '16 at 8:31, URL: https://stackoverflow.com/questions/41278798/python-bytessome-string-utf-8-and-strsome-string-utf-8
 # [9] Source: Author: Kiran Kumar Kotari, Date: Jan 20 '16 at 15:56, URL: https://stackoverflow.com/questions/15197673/using-pythons-eval-vs-ast-literal-eval
 # [10] Source: Author: fedorqui, Date: Jun 19 '15 at 22:26, URL: https://stackoverflow.com/questions/30948151/how-to-drop-a-collection-in-mongodb

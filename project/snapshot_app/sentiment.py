@@ -6,8 +6,10 @@
 # [6] Tweepy library - OAuthHandler class to authenticate Twitter API credentials, URL: http://docs.tweepy.org/en/v3.8.0/auth_tutorial.html
 # [7] To catch IBM Watson generated exceptions, URL: https://github.com/IBM/python-sdk-core
 # [8] IBM Natural Language Understanding API to calculate sentiment, URL: https://cloud.ibm.com/apidocs/natural-language-understanding?code=python
-# [9] Adapted from: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/natural_language_understanding_v1.py
-# [10]: Adapted from: https://github.com/vprusso/youtube_tutorials/blob/master/twitter_python/part_5_sentiment_analysis_tweet_data/sentiment_anaylsis_twitter_data.py
+# [9] Source: https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/natural_language_understanding_v1.py
+# [10] Source: https://github.com/vprusso/youtube_tutorials/blob/master/twitter_python/part_5_sentiment_analysis_tweet_data/sentiment_anaylsis_twitter_data.py
+# [11] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.mean.html
+# [12] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
 
 import requests  # [1]
 import pandas as pd  # [2]
@@ -43,7 +45,7 @@ class NLUConnection:
 
 
 class TwitterConnection:
-    def __init__(self):
+    def __init__(self): # [10]
         self.key = "X9rPqN7KFmze7srVvE51FqaJf"
         self.secret = "E0SbuDIgETvJQicBqoQTn9GtVe3jyJKdJEcXFfCfCGw1mrmljl"
         self.token = "724869065894928385-uUY1B7BxAga8zUv3Ni3M3DLITTQI1Sf"
@@ -78,20 +80,20 @@ class Sentiment:
             analysis = 0
         return analysis
 
-    def get_user_timeline(self, handle, api):  # [10]
-        timeline = api.user_timeline(screen_name=handle, count=5)
+    def get_user_timeline(self, handle, api):
+        timeline = api.user_timeline(screen_name=handle, count=5) # [10]
         return timeline
 
-    def generate_timeseries(self, tweets):  # [10]
-        df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=["tweets"])
+    def generate_timeseries(self, tweets):
+        df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=["tweets"])  # [10]
         df["sentiment"] = np.array(
             [self.generate_sentiment(tweet) for tweet in df["tweets"]]
-        )
-        df["mean"] = df["sentiment"].mean()
+        )  # [10]
+        df["mean"] = df["sentiment"].mean() #[11]
         return df
 
     def update_sentiment(self, df):
-        y_ax = df["mean"].iloc[-1]
+        y_ax = df["mean"].iloc[-1] #[12]
         if y_ax == 0.0:
             y_ax = 0.01
         return y_ax

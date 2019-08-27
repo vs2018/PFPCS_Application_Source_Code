@@ -7,7 +7,7 @@
 # [7] Adapted from: Author:jezrael, Date:Nov 12 '17 at 7:14, URL:https://stackoverflow.com/questions/47246384/pandas-monthly-resample-15th-day
 # [8] Adapted from: Author:jezrael, Date:Dec 23 '16 at 11:39, URL:https://stackoverflow.com/questions/41300653/pandas-resample-apply-custom-function
 # [9]Adapted from: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
-# [10] Adapted from: imolit, Jul 8 '15 at 15:17, https://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas
+# [10] Adapted from: imolit, Jul 8 '15 at 15:17, URL:https://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas
 # [11] Source: Author:EdChum, Date:Jan 25 '15 at 10:37, URL:https://stackoverflow.com/questions/28135436/concatenate-rows-of-two-dataframes-in-pandas
 
 
@@ -64,7 +64,7 @@ class AveragePrice:
             latest_price_df.rename(
                 columns={f"{self.fuel_type}": "Prediction"}, inplace=True
             )  # [9]
-            forecast.rename(columns={"Price": "Prediction"}, inplace=True)
+            forecast.rename(columns={"Price": "Prediction"}, inplace=True)  # [9]
         else:
             model = PredictionModel(
                 df,

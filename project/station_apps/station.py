@@ -2,12 +2,12 @@
 # [2] Pandas library used for creating a DataFrame, URL: https://pandas.pydata.org/pandas-docs/stable/
 # [3] PyMongo API - to catch PyMongo exceptions , URL: https://api.mongodb.com/python/current/api/pymongo/errors.html
 # [4] Adapted from: Author:alishobeiri, Date:Aug '17, URL:https://community.plot.ly/t/how-to-integrate-google-maps-address-autocompletion-in-dash/5515/2
-# [5] Adapted from: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
+# [5] Source: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
 # [6] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_excel.html
 # [7] Adapted from: Author: Andre Holzner, Date: Sep 6 '15 at 16:02, URL:https://stackoverflow.com/questions/32425334/splitting-a-string-in-a-python-dataframe
-# [8] Adapted from: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
+# [8] Source: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
 # [9] Source: Author:Zero, Date:Jul 27 '18 at 4:23, URL:https://stackoverflow.com/questions/31247763/round-columns-in-pandas-dataframe
-# [10] Source: Author:ely, Date:Jul 2 '12 at 2:43, URL:https://stackoverflow.com/questions/11285613/selecting-multiple-columns-in-a-pandas-dataframe
+# [10] Adapted from: Author:ely, Date:Jul 2 '12 at 2:43, URL:https://stackoverflow.com/questions/11285613/selecting-multiple-columns-in-a-pandas-dataframe
 # [11] Adapted from: Author:Ben, Date:Mar 12 '14 at 3:24, URL:https://stackoverflow.com/questions/22341271/get-list-from-pandas-dataframe-column
 # [12] Source: https://pandas.pydata.org/pandas-docs/version/0.17.1/generated/pandas.DataFrame.drop_duplicates.html
 # [13] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
@@ -22,7 +22,8 @@
 # [22] Adapted from: Author: Michael Hoff, Date:Jul 23 '16 at 13:42, URL:https://stackoverflow.com/questions/38542419/could-pandas-use-column-as-index
 # [23] Source: Author: WeNYoBen, Date:Dec 26 '18 at 3:48, URL:https://stackoverflow.com/questions/53927219/pandas-concat-two-data-frames-one-with-and-one-without-headers
 # [24] Source: Author: WeNYoBen, Date:Jan 17 '18 at 2:18, URL:https://stackoverflow.com/questions/48292656/pandas-select-unique-values-from-column
-# [25] Source: https://github.com/mapbox/mapbox-sdk-py/blob/master/docs/directions.md
+# [25] Source: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
+# [26] Source: Author: Hyperboreus, Date: Oct 4 '13 at 14:52, URL: https://stackoverflow.com/questions/19184335/is-there-a-need-for-rangelena
 
 import requests  # [1]
 import pandas as pd  # [2]
@@ -93,8 +94,8 @@ class Station:
                     f"https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={self.origin}"
                 )  # [5]
                 data = result.json()  # [5]
-                with open(f"{self.origin}.json", "w", encoding="utf-8") as outfile:
-                    json.dump(data, outfile, ensure_ascii=False, indent=2)
+                with open(f"{self.origin}.json", "w", encoding="utf-8") as outfile: #[25]
+                    json.dump(data, outfile, ensure_ascii=False, indent=2) #[25]
                 DatabaseModel().save(data, "fuel_price_api", f"{date}-{self.origin}")
         else:
             try:
@@ -104,8 +105,8 @@ class Station:
                     f"https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={post_code}"
                 )  # [5]
                 data = result.json()  # [5]
-                with open(f"{post_code}.json", "w", encoding="utf-8") as outfile:
-                    json.dump(data, outfile, ensure_ascii=False, indent=2)
+                with open(f"{post_code}.json", "w", encoding="utf-8") as outfile: #[25]
+                    json.dump(data, outfile, ensure_ascii=False, indent=2) #[25]
                 DatabaseModel().save(data, "fuel_price_api", f"{date}-{self.origin}")
         return data
 
@@ -303,8 +304,8 @@ class JourneyStation(Station):
             try:
                 response = MapboxConnection().directions_client.directions(
                     [origin_dict, destination_dict], "mapbox/driving-traffic"
-                )  # [25]
-                driving_route = response.geojson()
+                )  # [14]
+                driving_route = response.geojson() # [14]
                 route_responses.append(driving_route)
                 distance_value = driving_route["features"][0]["properties"]["distance"]
                 distances.append([distance_value, j])
@@ -318,7 +319,7 @@ class JourneyStation(Station):
         df_route.to_excel("Test_Journey_save_station_routes_df_route.xlsx")  # [6]
         off_routes = []
         off_routes_data = []
-        for i in range(len(df)):
+        for i in range(len(df)): #[26]
             try:
                 data = self.generate_directions(df, df_route, i)
                 distances, route_responses = data["distances"], data["route_responses"]
@@ -345,7 +346,7 @@ class JourneyStation(Station):
                 + " mins"
             )
             data = []
-            for k in range(len(closest_coordinate) - 1):
+            for k in range(len(closest_coordinate) - 1): #[26]
                 data.append(
                     {
                         "closest_coordinate": closest_coordinate,
@@ -379,7 +380,7 @@ class JourneyStation(Station):
         )
 
         off_routes = []
-        for i in range(len(data["closest_coordinate"])):
+        for i in range(len(data["closest_coordinate"])): #[26]
 
             off_routes.append(
                 UIComponent().render_off_route(
@@ -405,7 +406,7 @@ class JourneyStation(Station):
             + str(int(df_route["Duration-Text"].iloc[0]))  # [13]
             + " mins"
         )
-        for i in range(len(df_route) - 1):
+        for i in range(len(df_route) - 1): #[26]
             routes.append(
                 UIComponent().render_journey_route(df_route, route_information, i)
             )
@@ -556,7 +557,7 @@ class NearestStation(Station):
         total = len(df)
         supermarket = 0
         non_supermarket = 0
-        for i in range(len(df)):
+        for i in range(len(df)): #[26]
             for station in ["TESCO", "MORRISONS", "ASDA", "SAINSBURYS"]:
                 if station in df["Brand"].iloc[i]:  # [13]
                     supermarket += 1
@@ -682,7 +683,7 @@ class NearestStation(Station):
                 + str(int(df_route["Duration-Text"].iloc[0]))  # [13]
                 + " mins"
             )
-            for i in range(len(df_route) - 1):
+            for i in range(len(df_route) - 1): #[26]
                 routes.append(
                     UIComponent().render_routes(df_route, route_information, i)
                 )

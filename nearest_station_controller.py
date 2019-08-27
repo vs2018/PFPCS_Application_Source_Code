@@ -7,10 +7,12 @@
 # [7] Adapted from: https://community.plot.ly/t/prepopulate-a-hidden-div/9120/3
 # [8] Source: Dash Multi-page app layout, URL:https://dash.plot.ly/urls
 # [9] Adapted from: Dash callbacks, URL: https://dash.plot.ly/getting-started-part-2
-# [10] Adapted from: "Dash Sharing State Between Callbacks",URL:https://dash.plot.ly/sharing-data-between-callbacks
+# [10] Adapted from: https://dash.plot.ly/sharing-data-between-callbacks
 # [11] Adapted from: Dash DataTable, URL: https://dash.plot.ly/datatable/interactivity
 # [12] Adapted from: Interactive Visualisations, URL: https://dash.plot.ly/interactive-graphing
 # [13] Source: https://dash-bootstrap-components.opensource.faculty.ai/l/components
+# [14] Adapted from: https://plot.ly/python/pie-charts/
+# [15] Adapted from: https://plot.ly/python/bar-charts/
 
 from app import app
 from dash.dependencies import Input, Output, State  # [2]
@@ -33,7 +35,7 @@ from nearest_station_view import (
 from navbar import navbar
 from project.infrastructure.utility import Utility
 
-layout = html.Div([navbar, jumbotron_app1, html.Div(id="layout")])  # [1] [8]
+layout = html.Div([navbar, jumbotron_app1, html.Div(id="layout")])  # [1] [2] [8]
 
 
 @app.callback(
@@ -235,7 +237,7 @@ def render_summary_cards(rows, derived_virtual_selected_rows, post_code, fuel_ty
         Input("autocompleteInput-nearest", "value"),
         Input("fuel_type", "value"),
     ],
-)  # [2] [9] [10] [11]
+)  # [2] [9] [10] [11] [14]
 def render_pie_chart(rows, derived_virtual_selected_rows, post_code, fuel_type):
     station = NearestStation(post_code, fuel_type)
     data = station.generate_brand_analysis(rows)
@@ -252,7 +254,7 @@ def render_pie_chart(rows, derived_virtual_selected_rows, post_code, fuel_type):
         Input("autocompleteInput-nearest", "value"),
         Input("fuel_type", "value"),
     ],
-)  # [2] [9] [10] [11]
+)  # [2] [9] [10] [11] [15]
 def render_bar_chart(
     rows, derived_virtual_selected_rows, radio, slider, post_code, fuel_type
 ):

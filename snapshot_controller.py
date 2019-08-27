@@ -56,12 +56,12 @@ layout_index = html.Div([navbar, jumbotron_homepage])  # [6]
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])  # [6]
 def display_page(pathname):  # [6]
-    if pathname == "/nearest-station":
-        return nearest_station_controller.layout
-    elif pathname == "/journey-saver":
-        return journey_saver_controller.layout
+    if pathname == "/nearest-station": # [6]
+        return nearest_station_controller.layout # [6]
+    elif pathname == "/journey-saver": # [6]
+        return journey_saver_controller.layout # [6]
     else:
-        return layout_index
+        return layout_index # [6]
 
 
 if __name__ == "__main__":  # [6]

@@ -1,7 +1,7 @@
 # [1] Plotly library - Graph Object to create interactive graphs, URL: https://plot.ly/python/reference/
 # [2] Dash Core Components library to create user interface components, URL: https://dash.plot.ly/dash-core-components
 # [3] Dash DataTable library to create an interactive table, URL: https://dash.plot.ly/datatable
-# [4] Dash HTML Component library to write html code, URL: https://dash.plot.ly/dash-html-components
+# [4] Dash HTML Component library to write html content, URL: https://dash.plot.ly/dash-html-components
 # [5] Dash Bootstrap Components library to write bootstrap components, URL: https://dash-bootstrap-components.opensource.faculty.ai/
 # [6] Dash DAQ component to create an interactive fuel tank meter, URL: https://dash.plot.ly/dash-daq
 # [7] Mapbox access token to create an interactive map (scattermapbox), URL: https://www.mapbox.com/
@@ -23,12 +23,15 @@
 # [23] Adapted from: Author: Gaurav, Date: Apr 30 '18 at 17:07, URL: https://stackoverflow.com/questions/15741759/find-maximum-value-of-a-column-and-return-the-corresponding-row-values-using-pan
 # [24] Adapted from: https://dash.plot.ly/datatable/interactivity
 
+
 import plotly.graph_objs as go  # [1]
 import dash_core_components as dcc  # [2]
 import dash_table  # [3]
 import dash_html_components as html  # [4]
 import dash_bootstrap_components as dbc  # [5]
 import dash_daq as daq  # [6]
+from utility import Utility
+
 
 mapbox_access_token = "pk.eyJ1IjoidnMyMDE5IiwiYSI6ImNqd29ydWh5cDFkajQ0NG9sc3FwbGtyY2IifQ.H9Y11sNtzZ1bOAzgu_mnVA"  # [7]
 
@@ -114,7 +117,7 @@ class UIComponent:
             id="data-table-analytics",
             figure=fig,
             hoverData={"points": [{"customdata": ""}]},
-        )  # [12]
+        )  # [12] [18]
         return graph
 
     @classmethod
@@ -130,7 +133,7 @@ class UIComponent:
             id="data-table-analytics2",
             figure=fig,
             hoverData={"points": [{"customdata": ""}]},
-        )  # [12]
+        )  # [12] [18]
         card_content = [
             dbc.CardHeader(
                 html.H5(
@@ -293,7 +296,7 @@ class UIComponent:
                         textinfo="label",
                     )  # [19]
                 ],
-                "layout": go.Layout(),
+                "layout": go.Layout(), # [11]
             }
         )
 
@@ -313,7 +316,7 @@ class UIComponent:
         return [dbc.Card(card_content, color="dark", outline=True, className="mx-0")]
 
     @classmethod
-    def cards_layout(cls, n_rows, n_cols, colors, data):  # [20]
+    def cards_layout(cls, n_rows, n_cols, colors, data):  # [13] [20]
         result = []
         data_counter = 0
         for row in range(n_rows):
@@ -468,6 +471,7 @@ class UIComponent:
 
     @classmethod
     def search_alerts(cls, df, post_code):  # [4]
+        df_deduplicated = Utility.drop_duplicate(df, ["PostCode"])
         range_today = df["Price"].max() - df["Price"].min()  # [23]
         range_tomorrow = (
             df["1-Day Price Prediction"].max() - df["1-Day Price Prediction"].min()
@@ -475,7 +479,7 @@ class UIComponent:
         alert = html.Div(
             [
                 dbc.Alert(
-                    f"Success: {df['PostCode'].count()} petrol stations found in {post_code}",
+                    f"Success: {df_deduplicated['PostCode'].count()} petrol stations found in {post_code}",
                     color="primary",
                 ),  # [22]
                 html.Hr(),
@@ -597,6 +601,6 @@ class UIComponent:
                     "titlefont": {"color": "black", "size": 14},
                     "tickfont": {"color": "black"},
                 },
-            ),
+            ), #[9]
         }
         return fig2

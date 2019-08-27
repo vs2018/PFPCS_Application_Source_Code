@@ -1,12 +1,12 @@
-# [1] Adapted from: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
-# [2] Adapted from: Author:lcastillov, Date:Jul 28 '16 at 18:53, URL:https://stackoverflow.com/questions/38644480/reading-json-file-with-python-3
-# [3] Adapted from: Author: abarnert, Date:Jun 22 '13 at 0:55, URL:https://stackoverflow.com/questions/17246260/python-readlines-usage-and-efficient-practice-for-reading
+# [1] Source: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
+# [2] Source: Author:lcastillov, Date:Jul 28 '16 at 18:53, URL:https://stackoverflow.com/questions/38644480/reading-json-file-with-python-3
+# [3] Source: Author: abarnert, Date:Jun 22 '13 at 0:55, URL:https://stackoverflow.com/questions/17246260/python-readlines-usage-and-efficient-practice-for-reading
 # [4] Source: Author: Ignacio Vazquez-Abrams, Date:Dec 24 '10 at 19:51,  URL:https://stackoverflow.com/questions/4528099/convert-string-to-json-using-python
 # [5] Adapted from: Author: Nader Hisham, Date:Oct 5 '17 at 3:53, URL:https://stackoverflow.com/questions/18837262/convert-python-dict-into-a-dataframe
 # [6] Adapted from: Author: Gustavo Bezerra, Date:Aug 4 '17 at 3:40, URL:https://stackoverflow.com/questions/45497835/how-to-drop-duplicates-based-on-two-or-more-subsets-criteria-in-pandas-data-fram
 # [7] Adapted from: Author: EdChum, Date:Jun 13 '16 at 10:45, URL:https://stackoverflow.com/questions/37787698/how-to-sort-pandas-dataframe-from-one-column
-# [8] Adapted from: Author:EdChum, Date:Aug 25 '15 at 12:58, URL:https://stackoverflow.com/questions/32204631/how-to-convert-string-to-datetime-format-in-pandas-python
-# [9] Adapted from: Author: Michael Hoff, Date:Jul 23 '16 at 13:42, URL:https://stackoverflow.com/questions/38542419/could-pandas-use-column-as-index
+# [8] Source: Author:EdChum, Date:Aug 25 '15 at 12:58, URL:https://stackoverflow.com/questions/32204631/how-to-convert-string-to-datetime-format-in-pandas-python
+# [9] Source: Author: Michael Hoff, Date:Jul 23 '16 at 13:42, URL:https://stackoverflow.com/questions/38542419/could-pandas-use-column-as-index
 # [10] Pandas library used for creating a DataFrame, URL: https://pandas.pydata.org/pandas-docs/stable/
 
 import datetime
@@ -22,15 +22,15 @@ class Utility:
         # return "2019-08-07"
 
     @staticmethod
-    def save_file(api, data):  # [1]
+    def save_file(api, data):
         date = Utility.get_today_date()
-        with open(f"{api}-{date}.json", "w", encoding="utf-8") as outfile:
-            json.dump(data, outfile, ensure_ascii=False, indent=2)
+        with open(f"{api}-{date}.json", "w", encoding="utf-8") as outfile: # [1]
+            json.dump(data, outfile, ensure_ascii=False, indent=2) # [1]
 
     @staticmethod
-    def save_no_date(name, data):  # [1]
-        with open(f"{name}.json", "w", encoding="utf-8") as outfile:
-            json.dump(data, outfile, ensure_ascii=False, indent=2)
+    def save_no_date(name, data):
+        with open(f"{name}.json", "w", encoding="utf-8") as outfile: # [1]
+            json.dump(data, outfile, ensure_ascii=False, indent=2) # [1]
 
     @staticmethod
     def open(api):  # [2]
@@ -60,12 +60,12 @@ class Utility:
         return None
 
     @staticmethod
-    def to_dataframe(obj):  # [5]
-        return pd.DataFrame(obj)
+    def to_dataframe(obj):
+        return pd.DataFrame(obj)  # [5]
 
     @staticmethod
-    def drop_duplicate(df, columns):  # [6]
-        return df.drop_duplicates(subset=columns)
+    def drop_duplicate(df, columns):
+        return df.drop_duplicates(subset=columns) # [6]
 
     @staticmethod
     def sort_columns(df, cols):  # [7]
