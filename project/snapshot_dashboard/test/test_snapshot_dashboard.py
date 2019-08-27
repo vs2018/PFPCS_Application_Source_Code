@@ -220,7 +220,7 @@ class TestDiscoveryConnection(object):
 
     def test_news_collection(self, api):
         print(api.news_collection)
-        assert len(api.news_collection) == 5
+        assert len(api.news_collection) > 0
 
 
 class TestNewsArticle(object):

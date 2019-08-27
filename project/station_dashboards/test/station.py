@@ -2,12 +2,12 @@
 # [2] Pandas library used for creating a DataFrame, URL: https://pandas.pydata.org/pandas-docs/stable/
 # [3] PyMongo API - to catch PyMongo exceptions , URL: https://api.mongodb.com/python/current/api/pymongo/errors.html
 # [4] Adapted from: Author:alishobeiri, Date:Aug '17, URL:https://community.plot.ly/t/how-to-integrate-google-maps-address-autocompletion-in-dash/5515/2
-# [5] Adapted from: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
+# [5] Source: https://panel.ukvehicledata.co.uk/Code-Examples-Python.aspx
 # [6] Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_excel.html
 # [7] Adapted from: Author: Andre Holzner, Date: Sep 6 '15 at 16:02, URL:https://stackoverflow.com/questions/32425334/splitting-a-string-in-a-python-dataframe
-# [8] Adapted from: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
+# [8] Source: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
 # [9] Source: Author:Zero, Date:Jul 27 '18 at 4:23, URL:https://stackoverflow.com/questions/31247763/round-columns-in-pandas-dataframe
-# [10] Source: Author:ely, Date:Jul 2 '12 at 2:43, URL:https://stackoverflow.com/questions/11285613/selecting-multiple-columns-in-a-pandas-dataframe
+# [10] Adapted from: Author:ely, Date:Jul 2 '12 at 2:43, URL:https://stackoverflow.com/questions/11285613/selecting-multiple-columns-in-a-pandas-dataframe
 # [11] Adapted from: Author:Ben, Date:Mar 12 '14 at 3:24, URL:https://stackoverflow.com/questions/22341271/get-list-from-pandas-dataframe-column
 # [12] Source: https://pandas.pydata.org/pandas-docs/version/0.17.1/generated/pandas.DataFrame.drop_duplicates.html
 # [13] Adapted from: Author: Guillaume, Date: Jun 25 '18 at 20:03, URL: https://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-dataframe
@@ -22,7 +22,8 @@
 # [22] Adapted from: Author: Michael Hoff, Date:Jul 23 '16 at 13:42, URL:https://stackoverflow.com/questions/38542419/could-pandas-use-column-as-index
 # [23] Source: Author: WeNYoBen, Date:Dec 26 '18 at 3:48, URL:https://stackoverflow.com/questions/53927219/pandas-concat-two-data-frames-one-with-and-one-without-headers
 # [24] Source: Author: WeNYoBen, Date:Jan 17 '18 at 2:18, URL:https://stackoverflow.com/questions/48292656/pandas-select-unique-values-from-column
-
+# [25] Source: Author:phihag, Date:Sep 6 '12 at 22:23, URL:https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file
+# [26] Source: Author: Hyperboreus, Date: Oct 4 '13 at 14:52, URL: https://stackoverflow.com/questions/19184335/is-there-a-need-for-rangelena
 
 import requests  # [1]
 import pandas as pd  # [2]
@@ -37,7 +38,9 @@ import pymongo  # [3]
 
 
 class Station:
+    """Class generates the fuel price table, with current and predicted prices by petrol station, for the Nearest Station and Journey Saver Dashboards"""
     def __init__(self, origin, fuel_type, destination=None):
+        """Constructs a station object with fuel price results from a user query"""
         self.origin = Utility.to_uppercase(origin)
         self.destination = Utility.to_uppercase(destination)
         self.fuel_type = fuel_type
@@ -60,11 +63,10 @@ class Station:
             "Lat": [],
             "Lon": [],
         }
-        # self.data = self.save()
 
     @staticmethod
     def address(value):  # [4]
-        print(value, "Station address input")
+        """Generates an address, from a user provided postcode, by calling the Mapbox Geocoding API"""
         try:
             mapbox = Map(value)
             addresses = mapbox.generate_address()
@@ -79,45 +81,37 @@ class Station:
                 result = [{"label": address["place_name"], "value": address["text"]}]
         except KeyError:
             result = [{"label": "", "value": ""}]
-        print(result, "Station address output")
         return result
 
     def call_api(self, post_code=None):
+        """Fetches fuel prices from the UK Vehicle Data - Fuel Price API"""
         date = Utility.get_today_date()
         if post_code == None:
             try:
-                # data = Utility.open(self.origin)
                 data = DatabaseModel().read("fuel_price_api", f"{date}-{self.origin}")
             except Exception as e:
-                # print(e)
                 result = requests.get(
                     f"https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={self.origin}"
                 )  # [5]
                 data = result.json()  # [5]
-                with open(f"{self.origin}.json", "w", encoding="utf-8") as outfile:
-                    json.dump(data, outfile, ensure_ascii=False, indent=2)
+                with open(f"{self.origin}.json", "w", encoding="utf-8") as outfile: #[25]
+                    json.dump(data, outfile, ensure_ascii=False, indent=2) #[25]
                 DatabaseModel().save(data, "fuel_price_api", f"{date}-{self.origin}")
-                # Utility.save_no_date(self.origin, data)
         else:
             try:
-                # data = Utility.open(self.origin)
                 data = DatabaseModel().read("fuel_price_api", f"{date}-{self.origin}")
             except Exception as e:
-                # print(e)
                 result = requests.get(
                     f"https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={post_code}"
                 )  # [5]
                 data = result.json()  # [5]
-                with open(f"{post_code}.json", "w", encoding="utf-8") as outfile:
-                    json.dump(data, outfile, ensure_ascii=False, indent=2)
+                with open(f"{post_code}.json", "w", encoding="utf-8") as outfile: #[25]
+                    json.dump(data, outfile, ensure_ascii=False, indent=2) #[25]
                 DatabaseModel().save(data, "fuel_price_api", f"{date}-{self.origin}")
-                # Utility.save_no_date(post_code, data)
-        print(data, "Station call_api output")
         return data
 
-    # tested
     def update_table(self, df):
-        print(df, "Station update_table input")
+        """Updates the fuel price DataFrame for the UIComponent class to create a Dash DataTable user interface componentd"""
         df.to_excel("Test_Station_get_data_df.xlsx")  # [6]
         df = Utility.drop_duplicate(df, ["PostCode"])
         df["TimeRecorded"] = df["TimeRecorded"].str.split().str[0]  # [7]
@@ -134,15 +128,11 @@ class Station:
         )  # [8]
         cols = ["Distance", "Price", "Prediction", "Error"]
         df[cols] = df[cols].round(2)  # [9]
-        df1 = df[
-            ["Brand", "Post Code", "Price", "Prediction", "DateRecorded", "Error"]
-        ]  # [10]
-        print(df1, df, "Station update_table output")
+        df1 = df[["Brand", "Post Code", "Price", "Prediction", "DateRecorded"]]  # [10]
         return {"df": df, "df1": df1}
 
-    # tested
     def update(self, latlon, date, data, d, prediction, p):
-        print(latlon, date, data, d, prediction, p, "Station update input")
+        """Updates the station object with petrol station fuel price attributes"""
         self.data["Lat"].append(latlon[1])
         self.data["Lon"].append(latlon[0])
         self.data["Date"].append(date)
@@ -162,11 +152,10 @@ class Station:
         self.data["1-Day Prediction Model"].append(prediction["1-Day Prediction Model"])
         self.data["Price"].append(p["LatestRecordedPrice"]["InPence"])
         self.data["TimeRecorded"].append(p["LatestRecordedPrice"]["TimeRecorded"])
-        print(self.data, "Station update output")
         return None
 
-    # tested
     def reset(self):
+        """Resets station object for a new petrol station fuel price attributes"""
         self.data = {
             "Date": [],
             "SearchPostCode": [],
@@ -186,25 +175,17 @@ class Station:
             "Lat": [],
             "Lon": [],
         }
-        print(self.data, "Station reset output")
         return None
 
-    # tested
     def get_route_data(self, destination):
-        print(destination, "Station get_route_data input")
+        """Fetches petrol station routes from application persistence layer"""
         today = Utility.get_today_date()
         data = DatabaseModel().read("directions", f"{self.origin}-{destination}")
         df = Utility.to_dataframe(data)
-        print(df, "Station get_route_data output")
         return df
-        # df = DatabaseModel().read("DirectionsAPI")
-        # print(df[(df['Origin'] == self.origin) & (df['Destination'] == destination)],"Station get_route_data output")
-        # return df[(df['Origin'] == self.origin) & (df['Destination'] == destination)]
-
-    # tested
 
     def call_processor(self, data, date):
-        print(data, date, "Station call_processor input")
+        """Calls Processor class to generate a DataFrame with historical and predicted fuel prices for all petrol stations found"""
         for d in data["Response"]["DataItems"]["FuelStationDetails"]["FuelStationList"]:
             for p in d["FuelPriceList"]:
                 if p["FuelType"] == self.fuel_type:
@@ -229,22 +210,15 @@ class Station:
                         )
                         prediction = processor.get_predictions()
                         self.update(latlon, date, data, d, prediction, p)
-                        print(
-                            latlon,
-                            date,
-                            data,
-                            d,
-                            prediction,
-                            p,
-                            "Station call_processor output",
-                        )
                     except (UnboundLocalError, AttributeError) as e:
                         continue
         return None
 
 
 class JourneyStation(Station):
+    """Inherits from the parent Station class and is responsible for generating the Journey Saver Dashboard map"""
     def __init__(self, origin, fuel_type, destination):
+        """Constructor to generate an object with fuel price and map data for the Journey Saver Dashboard"""
         super().__init__(origin, fuel_type, destination)
         self.route_data = {
             "origin": [],
@@ -260,7 +234,7 @@ class JourneyStation(Station):
 
     @staticmethod
     def generate_station_post_codes(df):
-        # print(df,"Station get_unique_stations input")
+        """Generate list of postcodes that fall on the user provided journey route"""
         df.to_excel("Test_Station_get_unique_stations_df.xlsx")  # [6]
         unique_postcodes = (
             df["Station-PostCode"].drop_duplicates().values.tolist()
@@ -275,12 +249,10 @@ class JourneyStation(Station):
                 if outcode in postcode:
                     postcodes.append(postcode)
                     break
-        # print(postcodes,"Station get_unique_stations output")
         return postcodes
 
-    # tested
-
     def reset_route(self):
+        """Reset JourneyStation object to save a new petrol station route"""
         self.route_data = {
             "origin": [],
             "destination": [],
@@ -294,10 +266,8 @@ class JourneyStation(Station):
         }
         return None
 
-    # tested
-
     def update_route(self, closest_coordinate, route_information, k):
-        print(closest_coordinate, route_information, k, "Journey update_route input")
+        """Update JourneyStation object with a new petrol station route"""
         self.route_data["origin"].append(self.origin)
         self.route_data["destination"].append(self.destination)
         self.route_data["lat_origin"].append(closest_coordinate[k][1])
@@ -309,12 +279,9 @@ class JourneyStation(Station):
         self.route_data["k"].append(k)
 
         return None
-        # print(self.route_data,"Journey save_route output")
-
-    # tested
 
     def generate_directions(self, df, df_route, i):  # [14]
-        # print(df,df_route,i,"Journey get_offroute_data input")
+        """Generate routes, using Mapbox Directions API, to each petrol station falling along the journey"""
         df.to_excel("Test_Journey_get_offroute_data_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_get_offroute_data_df_route.xlsx")  # [6]
         station_lat, station_lon = df["Lat"].iloc[i], df["Lon"].iloc[i]  # [13]
@@ -335,35 +302,27 @@ class JourneyStation(Station):
                 },
             }
             try:
-                # print(origin_dict, destination_dict,"calling directions off routes vishal")
-                # Mapbox Directions API used, source: https://github.com/mapbox/mapbox-sdk-py/blob/master/docs/directions.md
                 response = MapboxConnection().directions_client.directions(
                     [origin_dict, destination_dict], "mapbox/driving-traffic"
-                )
-                driving_route = response.geojson()
-                # print(driving_route,"driving_route vishal")
+                )  # [14]
+                driving_route = response.geojson() # [14]
                 route_responses.append(driving_route)
                 distance_value = driving_route["features"][0]["properties"]["distance"]
                 distances.append([distance_value, j])
             except KeyError as e:
-                # print(e,"error with downloading direction")
                 continue
-        # print(distances,route_responses,"Journey get_offroute_data input output")
         return {"distances": distances, "route_responses": route_responses}
 
-    # tested
-
     def generate_route_information(self, df, df_route):
-        # print(df,df_route,"Journey save_station_routes input")
+        """Generate route information: distance and duration"""
         df.to_excel("Test_Journey_save_station_routes_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_save_station_routes_df_route.xlsx")  # [6]
         off_routes = []
         off_routes_data = []
-        for i in range(len(df)):
+        for i in range(len(df)): #[26]
             try:
                 data = self.generate_directions(df, df_route, i)
                 distances, route_responses = data["distances"], data["route_responses"]
-                # print(distances,route_responses,"result of get_offroute_data_vishal")
                 distances.sort(key=lambda x: x[0])  # [15]
                 closest_coordinate_response = route_responses[distances[0][1]]
             except IndexError:
@@ -387,7 +346,7 @@ class JourneyStation(Station):
                 + " mins"
             )
             data = []
-            for k in range(len(closest_coordinate) - 1):
+            for k in range(len(closest_coordinate) - 1): #[26]
                 data.append(
                     {
                         "closest_coordinate": closest_coordinate,
@@ -408,27 +367,20 @@ class JourneyStation(Station):
             "journey_route_information",
             f"{self.origin}-{self.destination}",
         )
-        print(self.route_data, "generate_route_information route_data structure vishal")
-        # Utility.save_no_date(f"routes-{self.origin}-{self.destination}",off_routes_data)
-        # df = Utility.to_dataframe(self.route_data)
-        # DatabaseModel().save(df, "DirectionsOffRoute")
+
         self.reset_route()
         return off_routes
 
     # tested
 
     def get_route_information(self, df):
+        """Fetch petrol station from application persistence layer"""
         data = DatabaseModel().read(
             "journey_route_information", f"{self.origin}-{self.destination}"
         )
-        print(data, "get_station_routes_vishal")
-        print(len(data), "length")
 
-        # data = Utility.open_no_date(f"routes-{self.origin}-{self.destination}")
         off_routes = []
-        for i in range(len(data["closest_coordinate"])):
-            print(i, "index in get route information")
-            print(data["closest_coordinate"][i], "render off route in get route info")
+        for i in range(len(data["closest_coordinate"])): #[26]
 
             off_routes.append(
                 UIComponent().render_off_route(
@@ -437,22 +389,13 @@ class JourneyStation(Station):
                     data["k"][i],
                 )
             )
-        # for i in range(len(df))::
-        #     for j in range(len(data[i])):
-        #         off_routes.append(
-        #             UIComponent().render_off_route(
-        #                 data[i][j]["closest_coordinate"],
-        #                 data[i][j]["route_information"],
-        #                 data[i][j]["k"],
-        #             )
-        #         )
-        print(off_routes, "get_route_information output")
+
         return off_routes
 
     # tested
 
     def generate_routes(self, df_route, df):
-        # print(df_route,df,"Journey map_routes input")
+        """Generate user interface routes on a map using UIComponent class"""
         df.to_excel("Test_Journey_map_routes_df.xlsx")  # [6]
         df_route.to_excel("Test_Journey_map_routes_df_route.xlsx")  # [6]
         routes = []
@@ -463,34 +406,20 @@ class JourneyStation(Station):
             + str(int(df_route["Duration-Text"].iloc[0]))  # [13]
             + " mins"
         )
-        for i in range(len(df_route) - 1):
+        for i in range(len(df_route) - 1): #[26]
             routes.append(
                 UIComponent().render_journey_route(df_route, route_information, i)
             )
-        # print(off_routes,routes,"Journey map_routes output")
         return routes
 
-    # tested
-
     def generate_map_data(self, df):
-        print(df, "Journey generate_map_data input")
+        """Generate a map with the journey route, and routes to each petrol station, from user inputs"""
         df.to_excel("Test_Journey_map_df.xlsx")  # [6]
         stations_list = super().get_route_data(self.destination)
-        print(stations_list, "Journey generate_map_data 1")
 
         routes = self.generate_routes(stations_list, df)
-        print(routes, "Journey generate_map_data 2")
         off_routes = self.generate_route_information(df, stations_list)
 
-        # try:
-        #     off_routes = self.get_route_information(df)
-        # except (
-        #     TypeError,
-        #     pymongo.errors.ServerSelectionTimeoutError,
-        #     IndexError,
-        #     KeyError,
-        # ) as e:
-        #     off_routes = self.generate_route_information(df, stations_list)
         df["Information"] = (
             df["Brand"]
             + ", "
@@ -500,7 +429,6 @@ class JourneyStation(Station):
             + "p, "
             + df["Post Code"]
         )
-        print(off_routes, "Journey generate_map_data 3")
         latlon_origin = Map.generate_latlon(self.origin)
         latlon_destination = Map.generate_latlon(self.destination)
         stations = UIComponent().render_stations(df)
@@ -514,8 +442,7 @@ class JourneyStation(Station):
             latlon_destination[0],
             stations_list["End-Address"].iloc[0],  # [13]
         )
-        # print(stations_list,origin_coordinate,destination_coordinate,routes,off_routes,stations,"mapvishal")
-        # print(stations_list,origin_coordinate,destination_coordinate,routes,off_routes,stations,"Journey map output")
+
         data = {
             "stations_list": stations_list,
             "origin_coordinate": origin_coordinate,
@@ -526,63 +453,46 @@ class JourneyStation(Station):
         }
         return data
 
-    # tested
-
     def call_api(self, post_codes):
-        # print(post_codes,"Journey call_api input")
+        """Call parent class to fetch fuel prices for petrol stations along a journey"""
         batch_data = []
         for post_code in post_codes:
             data = super().call_api(post_code)
-            # try:
-            #     data = Utility.open(post_code)
-            #     #print(data,"inside call_api journey")
-            # except FileNotFoundError as e:
-            #     #print(e,"exception raised in call_api journey")
-            #     result = requests.get(
-            #         f'https://uk1.ukvehicledata.co.uk/api/datapackage/FuelPriceData?v=2&api_nullitems=1&auth_apikey=270a5ba1-4ff1-4876-8ebf-3cddd33d66b6&user_tag=&key_postcode={post_code}')
-            #     data = result.json()
-            #     Utility.save(post_code, data)
+
             try:
                 data["Response"]["DataItems"]["FuelStationDetails"]["FuelStationList"][
                     0
                 ]
                 batch_data.append(data)
             except KeyError as e:
-                # print(e)
                 pass
-        # print(batch_data,"Journey call_api output")
         return batch_data
 
     def get_directions(self):
+        """Generate a DataFrame with route coordinates using the Mapbox Directions API"""
         try:
             data = DatabaseModel().read(
                 "directions", f"{self.origin}-{self.destination}"
             )
             df = Utility.to_dataframe(data)
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [3]
-            # print(e)
             mapbox = Map(self.origin, self.destination)
             df = mapbox.save()
-        # print(df,"Station get_directions output")
         return df
 
-    # tested
     def get_places(self, df_directions):
+        """Generate a DataFrame, using Google Places API, with petrol station coordinates found along a journey"""
         try:
             data = DatabaseModel().read("places", f"{self.origin}-{self.destination}")
             df = Utility.to_dataframe(data)
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [3]
-            # print(e)
             places = Place(self.origin, self.destination, df_directions)
             df = places.save()
-        # print(df,"Station get_places output")
         return df
 
-    # tested
-
     def get_journey_data(self):
+        """Generate fuel prices and map data for the Journey Saver Dashboard"""
         df_directions = self.get_directions()
-        # print(df_directions,"get_journey_data_vishal")
         df_places = self.get_places(df_directions)
         post_codes = JourneyStation.generate_station_post_codes(df_places)
         today = Utility.get_today_date()
@@ -593,16 +503,13 @@ class JourneyStation(Station):
                 f"{today}-{self.origin}-{self.fuel_type}-{self.destination}",
             )
             df = Utility.to_dataframe(data)
-            # df = DatabaseModel().read("stations")
-            # df = df[(df['SearchPostCode'].isin(post_codes)) & (df['FuelType'] == self.fuel_type) & (df['Date'] == today)]
+
         except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [3]
-            # print(e)
             df = self.save(post_codes)
-        # print(df,"Station get_journey_data output")
         return df
 
     def save(self, post_codes):
-        # print(post_codes,"Journey save input")
+        """Call parent class to generate DataFrame with historical and predicted fuel prices"""
         post_codes = self.remove_invalid_post_code(post_codes)
         batch_data = self.call_api(post_codes)
         date = Utility.get_today_date()
@@ -615,64 +522,51 @@ class JourneyStation(Station):
                 "journey_fuel_prices",
                 f"{date}-{self.origin}-{self.fuel_type}-{self.destination}",
             )
-            # DatabaseModel().save(df, "stations")
-        # print(df,"Journey save output")
+
         super().reset()
         return df
 
-    # tested
-
     def remove_invalid_post_code(self, post_codes):
-        # print(post_codes,"Journey remove_invalid_post_code input")
+        """Filter petrol station postcodes without an 'A' due to Fuel Price API restriction"""
         for post_code in post_codes:
             if "A" not in post_code:
                 post_codes.remove(post_code)
-        # print(post_codes,"Journey remove_invalid_post_code output")
         return post_codes
 
 
 class NearestStation(Station):
+    """Inherits from the parent Station Class and is responsible for generating the data for the Nearest Station Dashboard"""
     def __init__(self, post_code, fuel_type):
+        """Constructs an object with user inputs for the Nearest Station Dashboard"""
         super().__init__(post_code, fuel_type)
-        # self.post_code = post_code
-        # self.fuel_type = fuel_type
-        # self.data = self.save()
 
     def get_station_data(self, station):
-        # print(station,"Station get_station_data input")
+        """Fetch fuel prices from the applications persistence layer"""
         today = Utility.get_today_date()
         data = DatabaseModel().read(
             "station_fuel_prices", f"{today}-{self.origin}-{self.fuel_type}"
         )
         df = Utility.to_dataframe(data)
 
-        # df = DatabaseModel().read("stations")
-        # today = Utility.get_today_date()
-        # print(df[(df['PostCode'] == station) & (df['Date'] == today) & (df['FuelType'] == self.fuel_type)],"Station get_station_data output")
         return df[(df["PostCode"] == station)]  # [17]
 
-    # tested
-
     def generate_brand_analysis(self, data):
-        # print(data,"NearestPump get_brand_analysis input")
+        """Calculates proportion of supermarkets vs other fuel retailers found in a user query, for a pie chart"""
         df = Utility.to_dataframe(data)
         df = Utility.drop_duplicate(df, ["Post Code"])
         total = len(df)
         supermarket = 0
         non_supermarket = 0
-        for i in range(len(df)):
+        for i in range(len(df)): #[26]
             for station in ["TESCO", "MORRISONS", "ASDA", "SAINSBURYS"]:
                 if station in df["Brand"].iloc[i]:  # [13]
                     supermarket += 1
         non_supermarket = total - supermarket
-        # print(supermarket,non_supermarket,"NearestPump get_brand_analysis output")
 
         return {"supermarket": supermarket, "non_supermarket": non_supermarket}
 
-    # tested
-
     def generate_metrics(self, data, slider, radio):
-        # print(data,slider,radio,"NearestPump get_metrics input")
+        """Generates data for the petrol station analysis bar chart"""
         df = Utility.to_dataframe(data)
         df = df[df["Distance"] <= slider]  # [17]
         price_min, price_max = df["Price"].min(), df["Price"].max()  # [18]
@@ -693,13 +587,10 @@ class NearestStation(Station):
         else:
             df = Utility.sort_columns(df, ["Distance", "Price", "Prediction"])
         df = df.loc[~df[radio].duplicated(keep="first")]  # [17] [19] [20] [21]
-        # print(df,min,max,"NearestPump get_metrics output")
         return {"df": df, "min": min, "max": max}
 
-    # tested
-
     def generate_search_analysis(self, rows):
-        # print(rows,"NearestPump get_data_analysis input")
+        """Generates data highlighting fuel price statistics from a particular user query"""
         df = Utility.to_dataframe(rows)
         brand_today = df[df["Price"] == df["Price"].min()]["Brand"].iloc[
             0
@@ -723,7 +614,6 @@ class NearestStation(Station):
         ].iloc[
             0
         ]  # [13] [17] [18]
-        # print(brand_today,postcode_today,distance_today,brand_tomorrow,postcode_tomorrow,distance_tomorrow,"NearestPump get_data_analysis output")
         analysis = {
             "brand_today": brand_today,
             "postcode_today": postcode_today,
@@ -734,45 +624,27 @@ class NearestStation(Station):
         }
         return analysis
 
-    # tested
-
     def generate_station_timeseries(self, hoverData, rows):
-        print(hoverData, rows, "NearestPump get_station_prices input")
-
+        """Generates a time series for a user selected petrol station, showing historical and predicted fuel prices"""
         df_rows = Utility.to_dataframe(rows)
-        print(df_rows, "generate_station_timeseries 1")
 
         try:
             if hoverData["points"][0]["customdata"] != "":
                 station_post_code = hoverData["points"][0]["customdata"]
             else:
-                # except (KeyError, TypeError, IndexError):
                 station_post_code = df_rows["Post Code"].iloc[0]  # [13]
         except (KeyError, TypeError):
             station_post_code = df_rows["Post Code"].iloc[0]  # [13]
 
-            # df[df["Price"] == df["Price"].min()]["Post Code"].iloc[
-            #     0
-            # ]
-        print(station_post_code, "generate_station_timeseries 1.5")
-        # if hoverData['points'][0]['customdata'] == "" or (hoverData['points'][0]['customdata'] == None):
-        #     station_post_code = df[df['Price'] == df['Price'].min()]['Post Code'].iloc[0]
-        # else:
-        #     station_post_code = hoverData['points'][0]['customdata']
-
         df = self.get_station_data(station_post_code)
         brand = df.iloc[0]["Brand"]  # [13]
         station_post_code = df.iloc[0]["PostCode"]  # [13]
-        print(df, "generate_station_timeseries 2")
         if df["1-Day Prediction Confidence"].iloc[0] > 200:  # [13]
             hoverData = {"points": [{"customdata": ""}]}
             df = self.get_station_data(df_rows["Post Code"].iloc[0])  # [13]
-            print("inside if 200")
 
-        # df = Utility.fetch_postcode_filtered_dataframe(station_post_code, self.fuel_type)
         db = DatabaseModel()
         master = db.get_master()
-        print(master, "generate_station_timeseries 3")
         prediction = Processor(
             df.iloc[0]["Brand"],
             df.iloc[0]["Town"],
@@ -784,32 +656,24 @@ class NearestStation(Station):
             master,
         )  # [13]
         prediction = prediction.get_predictions()
-        print(prediction, "generate_station_timeseries 4")
         df1, predicted_df = prediction["df"], prediction["prediction"]
-        print(df1, predicted_df)
         df1.set_index("Date", inplace=True)  # [22]
         df1.rename(columns={"Price": "Prediction"}, inplace=True)  # [8]
         df = pd.concat([df1, predicted_df])  # [23]
-        # print(df,brand,station_post_code,"NearestPump get_station_prices output")
         data = {"df": df, "brand": brand, "station_post_code": station_post_code}
         return data
 
-    # tested
-
     def generate_routes(self, stations_list):
-        # print(stations_list,"NearestPump map_routes input")
+        """Generates routes, along with distance and duration information, between user entered postcode and petrol stations found in the query"""
         routes = []
         for idx, station in enumerate(stations_list):
             try:
                 df_route = super().get_route_data(station)
-                # df_route = Utility.fetch_journey_filtered_dataframe(self.origin, station)
             except (TypeError, pymongo.errors.ServerSelectionTimeoutError) as e:  # [3]
-                # print(e, "MADE MAPBOX DIRECTIONS API CALL")
                 try:
                     mapbox = Map(self.origin, station)
                     df_route = mapbox.save()
                 except IndexError as e:
-                    # print(e)
                     mapbox = Map(self.origin, stations_list[idx - 1])
                     df_route = mapbox.save()
             route_information = (
@@ -819,19 +683,16 @@ class NearestStation(Station):
                 + str(int(df_route["Duration-Text"].iloc[0]))  # [13]
                 + " mins"
             )
-            for i in range(len(df_route) - 1):
+            for i in range(len(df_route) - 1): #[26]
                 routes.append(
                     UIComponent().render_routes(df_route, route_information, i)
                 )
-        print(
-            {"routes": routes, "df_route": df_route},
-            "NearestStation generate_routes output",
-        )
+
         return {"routes": routes, "df_route": df_route}
 
     # tested
     def generate_map_data(self, df):
-        # print(df,"NearestPump map input")
+        """Generates data to render a map on the Nearest Station dashboard"""
         df.to_excel("Test_NearestPump_map_input.xlsx")  # [6]
         stations_list = (
             df[df["SearchPostCode"] == self.origin]["Post Code"].unique().tolist()
@@ -854,23 +715,17 @@ class NearestStation(Station):
         origin_coordinate = UIComponent().render_origin(
             search_lat, search_lon, self.origin
         )
-        print(
-            df_route,
-            origin_coordinate,
-            stations,
-            routes,
-            "NearestStation generate_map_data output",
-        )
+
         data = {
             "df_route": df_route,
             "origin_coordinate": origin_coordinate,
             "stations": stations,
             "routes": routes,
         }
-        print(data, "NearestStation generate_map_data output v2")
         return data
 
     def get_stations(self):
+        """Fetches fuel prices from the applications persistence layer"""
         try:
             today = Utility.get_today_date()
             data = DatabaseModel().read(
@@ -878,14 +733,11 @@ class NearestStation(Station):
             )
             df = Utility.to_dataframe(data)
         except (pymongo.errors.ServerSelectionTimeoutError, TypeError) as e:  # [3]
-            # print(e)
             df = self.save()
-        # print(df,"Station get_stations output")
         return df
 
-    # tested
-
     def save(self):
+        """Generates a DataFrame with historical and predicted fuel prices for a particular user query"""
         data = super().call_api()
         date = Utility.get_today_date()
         super().call_processor(data, date)
@@ -896,7 +748,5 @@ class NearestStation(Station):
                 "station_fuel_prices",
                 f"{date}-{self.origin}-{self.fuel_type}",
             )
-            # DatabaseModel().save(df, "stations")
-        # print(df,"NearestPump save output")
         super().reset()
         return df

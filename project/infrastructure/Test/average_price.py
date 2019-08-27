@@ -1,4 +1,17 @@
-import pandas as pd
+# [1] Pandas library used for creating a DataFrame, URL: https://pandas.pydata.org/pandas-docs/stable/
+# [2] Adapted from: https://www.oipapio.com/question-4559816
+# [3] Adapted from: Author, mrbTT, Date:Oct 26 '18 at 17:31, URL:https://stackoverflow.com/questions/46217529/pandas-datetimeindex-frequency-is-none-and-cant-be-set
+# [4] Adapted from: Author:johnchase, Date:Jan 8 '16 at 17:51, URL:https://stackoverflow.com/questions/34682828/extracting-specific-selected-columns-to-new-dataframe-as-a-copy
+# [5] Adapted from: https://machinelearningmastery.com/resample-interpolate-time-series-data-python/
+# [6] Adapted from: Author: Matti John, Date:Jun 8 '13 at 16:20, URL:https://stackoverflow.com/questions/17001389/pandas-resample-documentation
+# [7] Adapted from: Author:jezrael, Date:Nov 12 '17 at 7:14, URL:https://stackoverflow.com/questions/47246384/pandas-monthly-resample-15th-day
+# [8] Adapted from: Author:jezrael, Date:Dec 23 '16 at 11:39, URL:https://stackoverflow.com/questions/41300653/pandas-resample-apply-custom-function
+# [9]Adapted from: Author:lexual, Date:Jul 6 '12 at 1:48, URL:https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
+# [10] Adapted from: imolit, Jul 8 '15 at 15:17, URL:https://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas
+# [11] Source: Author:EdChum, Date:Jan 25 '15 at 10:37, URL:https://stackoverflow.com/questions/28135436/concatenate-rows-of-two-dataframes-in-pandas
+
+
+import pandas as pd  # [1]
 
 from database import DatabaseModel
 from prediction_model import PredictionModel
@@ -6,15 +19,12 @@ from utility import Utility
 
 
 class AveragePrice:
-    # tested
     def __init__(self, fuel_type, horizon, region=None):
         self.region = region
         self.fuel_type = fuel_type
         self.horizon = int(horizon)
         self.update_horizon()
-        # print(fuel_type,horizon,region,"AggregatePriceModel init variables")
 
-    # tested
     def update_horizon(self):
         if (self.region is None) and "supermarket" in self.fuel_type:
             if self.horizon == 1:
@@ -25,70 +35,36 @@ class AveragePrice:
                 self.horizon = 181
         return None
 
-    # Adapted from https://www.oipapio.com/question-4559816
-    def first_day(self, df):
+    def first_day(self, df):  # [2]
         if len(df):
-            # print(entry[0],"first day output")
             return df[0]
 
-    # tested
-
     def prepare_timeseries(self):
-        if self.region:
-            data = DatabaseModel().read("aggregate", self.fuel_type)
-            df = Utility.to_datetimeindex(data)
-            # df = pd.read_excel(self.fuel_type, index_col='Date', parse_dates=True)
-            # Adapted from mrbTT, Oct 26 '18 at 17:31, https://stackoverflow.com/questions/46217529/pandas-datetimeindex-frequency-is-none-and-cant-be-set
-            df.index.freq = "M"
-            # Adapted from johnchase, Jan 8 '16 at 17:51, https://stackoverflow.com/questions/34682828/extracting-specific-selected-columns-to-new-dataframe-as-a-copy
-            df = df[[self.region]].copy()
-            print(df, "region_vishal")
-        elif "supermarket" in self.fuel_type:
+        if "supermarket" in self.fuel_type:
             data = DatabaseModel().read("aggregate", "supermarket")
             df = Utility.to_datetimeindex(data)
-            # df = pd.read_excel('supermarket-comparison.xlsx', index_col='Date', parse_dates=True)
-            # Adapted from https://machinelearningmastery.com/resample-interpolate-time-series-data-python/
-            df = df.resample(rule="1D").interpolate()
-            # Adapted from johnchase, Jan 8 '16 at 17:51, https://stackoverflow.com/questions/34682828/extracting-specific-selected-columns-to-new-dataframe-as-a-copy
-            df = df[[f"{self.fuel_type}"]].copy()
+            df = df.resample(rule="1D").interpolate()  # [5] [6]
+            df = df[[f"{self.fuel_type}"]].copy()  # [4]
         else:
             data = DatabaseModel().read("aggregate", "non_supermarket")
             df = Utility.to_datetimeindex(data)
-            # df = pd.read_excel('daily-updated.xlsx', index_col='Date', parse_dates=True)
-            # Adapted from jezrael, Nov 12 '17 at 7:14, https://stackoverflow.com/questions/47246384/pandas-monthly-resample-15th-day
-            # Adapted from https://www.oipapio.com/question-4559816
-            df = df.resample(rule="MS").apply(self.first_day)
-            # Adapted from johnchase, Jan 8 '16 at 17:51, https://stackoverflow.com/questions/34682828/extracting-specific-selected-columns-to-new-dataframe-as-a-copy
-            df = df[[self.fuel_type, f"{self.fuel_type}-wholesale"]].copy()
-        # print(df,"AggregatePriceModel extract output")
+            df = df.resample(rule="MS").apply(self.first_day)  # [2] [7] [8]
+            df = df[[self.fuel_type, f"{self.fuel_type}-wholesale"]].copy()  # [4]
         return df
 
     # tested
     def get_prediction(self):
         df = self.prepare_timeseries()
         latest_price_df = df.iloc[[-1]]
-        # if self.region:
-        #     df.to_excel("Test_neural_network_region.xlsx")
-        #     model = PredictionModel(
-        #         df, self.horizon, self.region, self.fuel_type, "M", "N/A", "N/A"
-        #     )
-        #     forecast = model.predict()
-        #     # model = NeuralNetworkEngine(5, df, self.horizon,self.region, "M")
-        #     # forecast = model.prediction_engine()
-        #     forecast.rename(columns={self.region: "Prediction"}, inplace=True)
-        #     latest_price_df.rename(columns={self.region: "Prediction"}, inplace=True)
         if "supermarket" in self.fuel_type:
             model = PredictionModel(
                 df, self.horizon, f"{self.fuel_type}", self.fuel_type, "D", "N/A", "N/A"
             )
             forecast = model.predict()
-            # model = NeuralNetworkEngine(1, df, self.horizon,"Price", "D")
-            # forecast = model.prediction_engine()
-            # Adapted from lexual, Jul 6 '12 at 1:48, https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
             latest_price_df.rename(
                 columns={f"{self.fuel_type}": "Prediction"}, inplace=True
-            )
-            forecast.rename(columns={"Price": "Prediction"}, inplace=True)
+            )  # [9]
+            forecast.rename(columns={"Price": "Prediction"}, inplace=True)  # [9]
         else:
             model = PredictionModel(
                 df,
@@ -101,15 +77,10 @@ class AveragePrice:
                 True,
             )
             forecast = model.predict()
-            #
-            # model = SarimaEngine(self.fuel_type,self.horizon,df)
-            # forecast = model.prediction_engine()
-            # Adapted from unutbu, Jun 12 '13 at 17:44, https://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas
-            latest_price_df = df[df.index == "2019-06-01"]
-            # Adapted from lexual, Jul 6 '12 at 1:48, https://stackoverflow.com/questions/11346283/renaming-columns-in-pandas
-            latest_price_df.rename(columns={self.fuel_type: "Prediction"}, inplace=True)
-            forecast.rename(columns={self.fuel_type: "Prediction"}, inplace=True)
-        # Adapted EdChum, Jan 25 '15 at 10:37, from https://stackoverflow.com/questions/28135436/concatenate-rows-of-two-dataframes-in-pandas
-        merged_df = pd.concat([latest_price_df, forecast.iloc[[-1]]])
-        print(merged_df, "AggregatePriceModel predict output")
+            latest_price_df = df[df.index == "2019-06-01"]  # [10]
+            latest_price_df.rename(
+                columns={self.fuel_type: "Prediction"}, inplace=True
+            )  # [9]
+            forecast.rename(columns={self.fuel_type: "Prediction"}, inplace=True)  # [9]
+        merged_df = pd.concat([latest_price_df, forecast.iloc[[-1]]])  # [11]
         return merged_df

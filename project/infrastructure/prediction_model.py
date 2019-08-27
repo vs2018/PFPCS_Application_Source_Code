@@ -180,9 +180,9 @@ class PredictionModel:
     def rnn_model(self):
         """Generate RMSE value and prediction with RNN model"""
         if self.frequency == "D":
-            rnn_model = RNNModel(1, self.df, self.horizon, self.name, "D")
+            rnn_model = RNNModel(50, self.df, self.horizon, self.name, "D")
         elif self.frequency == "M":
-            rnn_model = RNNModel(1, self.df, self.horizon, self.name, "M")
+            rnn_model = RNNModel(50, self.df, self.horizon, self.name, "M")
         prediction = rnn_model.predict()
         self.rnn_error = rnn_model.error
         return prediction
@@ -216,7 +216,7 @@ class PredictionModel:
 
     def update_rnn_model(self):
         """Update RNN time series DataFrame with petrol station attributes"""
-        rnn_model = RNNModel(1, self.df, self.horizon, self.name, self.frequency)
+        rnn_model = RNNModel(50, self.df, self.horizon, self.name, self.frequency)
         return rnn_model.update(self.df, self.fuel_type, self.brand, self.post_code)
 
     def predict(self):

@@ -1,7 +1,7 @@
 # [1] Plotly library - Graph Object to create interactive graphs, URL: https://plot.ly/python/reference/
 # [2] Dash Core Components library to create user interface components, URL: https://dash.plot.ly/dash-core-components
 # [3] Dash DataTable library to create an interactive table, URL: https://dash.plot.ly/datatable
-# [4] Dash HTML Component library to write html code, URL: https://dash.plot.ly/dash-html-components
+# [4] Dash HTML Component library to write html content, URL: https://dash.plot.ly/dash-html-components
 # [5] Dash Bootstrap Components library to write bootstrap components, URL: https://dash-bootstrap-components.opensource.faculty.ai/
 # [6] Dash DAQ component to create an interactive fuel tank meter, URL: https://dash.plot.ly/dash-daq
 # [7] Mapbox access token to create an interactive map (scattermapbox), URL: https://www.mapbox.com/
@@ -23,12 +23,15 @@
 # [23] Adapted from: Author: Gaurav, Date: Apr 30 '18 at 17:07, URL: https://stackoverflow.com/questions/15741759/find-maximum-value-of-a-column-and-return-the-corresponding-row-values-using-pan
 # [24] Adapted from: https://dash.plot.ly/datatable/interactivity
 
+
 import plotly.graph_objs as go  # [1]
 import dash_core_components as dcc  # [2]
 import dash_table  # [3]
 import dash_html_components as html  # [4]
 import dash_bootstrap_components as dbc  # [5]
 import dash_daq as daq  # [6]
+from utility import Utility
+
 
 mapbox_access_token = "pk.eyJ1IjoidnMyMDE5IiwiYSI6ImNqd29ydWh5cDFkajQ0NG9sc3FwbGtyY2IifQ.H9Y11sNtzZ1bOAzgu_mnVA"  # [7]
 
@@ -40,7 +43,6 @@ class UIComponent:
 
     @classmethod
     def render_routes(cls, df_route, route_information, i):  # [9]
-        # Plotly library used
         return go.Scattermapbox(
             lat=[df_route["Lat"].iloc[i], df_route["Lat"].iloc[i + 1]],  # [10]
             lon=[df_route["Lng"].iloc[i], df_route["Lng"].iloc[i + 1]],  # [10]
@@ -50,7 +52,6 @@ class UIComponent:
 
     @classmethod
     def render_journey_route(cls, df_route, route_information, i):  # [9]
-        # Plotly libary used https://plot.ly/python/scattermapbox/
         return go.Scattermapbox(
             lat=[df_route["Lat"].iloc[i], df_route["Lat"].iloc[i + 1]],  # [10]
             lon=[df_route["Lng"].iloc[i], df_route["Lng"].iloc[i + 1]],  # [10]
@@ -110,16 +111,13 @@ class UIComponent:
 
     @classmethod
     def render_nearest_map(cls, df_route, search_code, stations, routes):
-        print(df_route, search_code, stations, routes, "render nearest map vishal")
         layout = cls.render_layout(df_route)
         fig = go.Figure(data=search_code + stations + routes, layout=layout)  # [11]
-        print(fig, "render nearest map vishal 2")
         graph = dcc.Graph(
             id="data-table-analytics",
             figure=fig,
             hoverData={"points": [{"customdata": ""}]},
-        )  # [12]
-        print(graph, "render nearest map vishal 3")
+        )  # [12] [18]
         return graph
 
     @classmethod
@@ -135,7 +133,7 @@ class UIComponent:
             id="data-table-analytics2",
             figure=fig,
             hoverData={"points": [{"customdata": ""}]},
-        )  # [12]
+        )  # [12] [18]
         card_content = [
             dbc.CardHeader(
                 html.H5(
@@ -260,7 +258,6 @@ class UIComponent:
 
     @classmethod
     def nearest_pump_bar(cls, trace1, trace2, min, max):  # [18]
-        print(trace1, trace2, min, max, "nearest_pump_bar input vishal")
         return dcc.Graph(
             figure={
                 "data": [trace1, trace2],
@@ -299,7 +296,7 @@ class UIComponent:
                         textinfo="label",
                     )  # [19]
                 ],
-                "layout": go.Layout(),
+                "layout": go.Layout(), # [11]
             }
         )
 
@@ -319,7 +316,7 @@ class UIComponent:
         return [dbc.Card(card_content, color="dark", outline=True, className="mx-0")]
 
     @classmethod
-    def cards_layout(cls, n_rows, n_cols, colors, data):  # [20]
+    def cards_layout(cls, n_rows, n_cols, colors, data):  # [13] [20]
         result = []
         data_counter = 0
         for row in range(n_rows):
@@ -348,7 +345,6 @@ class UIComponent:
                 "layout": {
                     "title": f"Fuel Price for {brand} at {post_code}",
                     "height": 225,
-                    # 'margin': {'l': 20, 'b': 30, 'r': 10, 't': 10},
                     "margin": {"l": 40, "b": 30, "r": 20, "t": 30},
                     "annotations": [
                         {
@@ -475,24 +471,22 @@ class UIComponent:
 
     @classmethod
     def search_alerts(cls, df, post_code):  # [4]
+        df_deduplicated = Utility.drop_duplicate(df, ["PostCode"])
         range_today = df["Price"].max() - df["Price"].min()  # [23]
         range_tomorrow = (
             df["1-Day Price Prediction"].max() - df["1-Day Price Prediction"].min()
         )  # [23]
         alert = html.Div(
             [
-                # Dash Bootstrap Components library used from https://dash-bootstrap-components.opensource.faculty.ai/l/components/alert
                 dbc.Alert(
-                    f"Success: {df['PostCode'].count()} petrol stations found in {post_code}",
+                    f"Success: {df_deduplicated['PostCode'].count()} petrol stations found in {post_code}",
                     color="primary",
                 ),  # [22]
                 html.Hr(),
-                # Dash Bootstrap Components library used https://dash-bootstrap-components.opensource.faculty.ai/l/components/button
                 dbc.Button(
                     "Summary Statistics", id="alert-toggle-fade", className="mr-1"
                 ),
                 html.Hr(),
-                # Dash Bootstrap Components library used https://dash-bootstrap-components.opensource.faculty.ai/l/components/alert
                 dbc.Alert(
                     [
                         html.P(f"Today's Min Price: {round(df['Price'].min(),1)}p"),
@@ -533,7 +527,6 @@ class UIComponent:
             style_header={
                 "backgroundColor": "rgb(230, 230, 230)",
                 "fontWeight": "bold",
-                # 'border': '1px solid blue'
             },
             css=[
                 {
@@ -559,7 +552,6 @@ class UIComponent:
                 }
             ],
         )
-        # Dash Bootstrap Components library used https://dash-bootstrap-components.opensource.faculty.ai/l/components/card
         card_content = [
             dbc.CardHeader(
                 html.H5(
@@ -574,10 +566,9 @@ class UIComponent:
     @classmethod
     def scatter_line(cls, df, title):  # [18]
         plot = go.Scatter(x=df.index, y=df["Prediction"], mode="lines+markers")  # [21]
-        graph = dcc.Graph(
+        graph = dcc.Graph(  # [12]
             figure={
                 "data": [plot],
-                # Plotly library used https://plot.ly/python/
                 "layout": go.Layout(
                     title=f"Fuel Price Movement: {title}",
                     yaxis={"title": "Price (pence)", "type": "linear"},
@@ -610,6 +601,6 @@ class UIComponent:
                     "titlefont": {"color": "black", "size": 14},
                     "tickfont": {"color": "black"},
                 },
-            ),
+            ), #[9]
         }
         return fig2

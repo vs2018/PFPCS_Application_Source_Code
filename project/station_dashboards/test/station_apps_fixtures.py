@@ -1089,7 +1089,8 @@ render_journey_result_input = [
     },
 ]
 
-# Data source: UK Vehicle Data API, Mapbox Geocoding API
+# Data source: UK Vehicle Data - Fuel Prices API, URL: https://ukvehicledata.co.uk/Fuel-Prices
+# Data Source: Mapbox Search Service Gocoding API to calculate coordinates/addresses, URL: https://docs.mapbox.com/api/search/
 render_journey_analysis_input = {
     "points": [
         {
@@ -1098,7 +1099,7 @@ render_journey_analysis_input = {
             "pointIndex": 0,
             "lon": -2.4134949035714,
             "lat": 51.0514774103974,
-            "customdata": "BA9 9EB",
+            "customdata": "BA3 2JL",
             "text": "MORRISONS, Unleaded: 128.9p, BA9 9EB",
         }
     ]
