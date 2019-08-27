@@ -21,7 +21,7 @@
 import dash_bootstrap_components as dbc  # [2]
 import dash_core_components as dcc  # [3]
 import dash_html_components as html  # [1]
-from project.snapshot_app.natural_language import NewsArticle, RACNewsletter
+from project.snapshot_dashboard.natural_language import NewsArticle, RACNewsletter
 from project.infrastructure.gui_component import UIComponent
 from app import app
 

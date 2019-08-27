@@ -16,8 +16,8 @@ import dash_html_components as html  # [1]
 from dash.dependencies import Input, Output, State  # [2]
 from app import app
 import dash_core_components as dcc  # [3]
-from project.station_apps.station import Station, JourneyStation
-from project.station_apps.vehicle import Vehicle
+from project.station_dashboards.station import Station, JourneyStation
+from project.station_dashboards.vehicle import Vehicle
 from journey_saver_view import *
 from navbar import navbar
 from project.infrastructure.utility import Utility

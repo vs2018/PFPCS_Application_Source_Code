@@ -13,9 +13,9 @@ import journey_saver_controller
 import nearest_station_controller
 from navbar import navbar
 from snapshot_view import jumbotron_homepage
-from project.snapshot_app.average_price import AveragePrice
+from project.snapshot_dashboard.average_price import AveragePrice
 from project.infrastructure.gui_component import UIComponent
-from project.snapshot_app.sentiment import Sentiment
+from project.snapshot_dashboard.sentiment import Sentiment
 
 import dash_core_components as dcc  # [3]
 import dash_html_components as html  # [1]

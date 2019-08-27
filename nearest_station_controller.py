@@ -21,7 +21,7 @@ import dash_core_components as dcc  # [3]
 
 
 from project.infrastructure.gui_component import UIComponent
-from project.station_apps.station import Station, NearestStation
+from project.station_dashboards.station import Station, NearestStation
 from nearest_station_view import (
     jumbotron_app1,
     layout_first_quarter,
