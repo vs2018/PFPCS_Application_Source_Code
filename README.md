@@ -1,10 +1,14 @@
+<h1>Predictive Fuel Price Comparison Service</h1>
+
 The project goal is to help consumers save money on car fuel. This goal will be achieved with the PFPCS (Predictive Fuel Price Comparison Service) application. The project has been developed in collaboration with IBM, the client. The application will provide personalised insights on fuel prices by geographical area. 
 
 The application uses structured csv data and unstructured natural language text sourced from a number of API’s and websites. These datasets are processed by the applications algorithms to generate a time series dataset and make multi-step predictions into the future. Predictive statistical and machine learning models have been implemented including an ARIMA model and a Recurral Neural Network. The application selects the best predictive model producing the lowest error value each time a query is processed. 
 
 Three distinct and complementary interactive web dashboards have been developed. These inform the consumer whether fuel prices are expected to rise or fall in the future based on online news articles; current and predicted fuel prices by petrol station in a particular post code; and personalised fuel price insights for a particular vehicle and journey route. 
 
-Application video demo: https://youtu.be/c0W_Lutadu0
+<h2>Application Demo</h2>
+
+https://youtu.be/c0W_Lutadu0
 
 <h2>Application Features and Technology Stack:</h2>
 
