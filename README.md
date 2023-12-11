@@ -2,4 +2,15 @@ The project goal is to help consumers save money on car fuel. This goal will be 
 
 A video demo of the PFPCS application can be found at: https://youtu.be/c0W_Lutadu0
 
+Application Features and Technology Stack:
+• Built Time Series Predictive models to predict fuel price 6 months into the future. 
+Stack: Statistical Predictive Models (StatsModels), Recurral Neural Network (Keras), Pandas, NumPy.
+• Built a Natural Language Processing capability to predict the fuel price using text data. 
+Stack: Naïve Bayes Classifier, BeautifulSoup (web scraper), IBM Watson Discovery API.
+• Analysed Twitter Sentiment of fuel retailers. Stack: Tweepy, Twitter API, IBM NLU API.
+• Developed geolocational algorithms to map optimal routes between a postcode and petrol station. 
+Stack: Geocoding API, Directions API, Places API, Distance Matrix API, Requests.
+• Interactive visualisations to provide personalised fuel price insights. 
+Stack: Vehicle Data API, Fuel Price API, Bootstrap, Wordcloud, Plotly, Dash, HTML. Persistence provided with MongoDB and GridFS.
+
 <img width="601" alt="Screenshot 2023-12-11 at 11 05 49" src="https://github.com/vs2018/PFPCS_Application_Source_Code/assets/33228620/b43d9838-c17f-43f3-b2bb-9cae429fba04">
